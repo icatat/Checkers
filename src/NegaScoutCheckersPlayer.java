@@ -1,2 +1,2 @@
-public class NegaScoutCheckersPlayer {
+public class NegaScoutCheckersPlayer implements Minimax{
 }

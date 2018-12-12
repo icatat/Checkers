@@ -2,13 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bb9f5d6-9db4-4947-842b-8087055f01d3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/InvalidMoveException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Piece.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/CheckersPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ClassCreator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GraphicalUserInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Logger.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Minimax.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SpringUtilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/UserInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Checkers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Checkers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckersPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/State.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/State.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/NegaScoutCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NegaScoutCheckersPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -65,7 +73,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Piece.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Piece.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Piece.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
@@ -83,8 +91,8 @@
       <file leaf-file-name="State.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/State.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4343">
-              <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
+            <state relative-caret-position="1948">
+              <caret line="614" column="9" lean-forward="true" selection-start-line="614" selection-start-column="9" selection-end-line="614" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1756#1757#0" expanded="true" />
@@ -115,11 +123,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Checkers.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Checkers.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Checkers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
+            <state relative-caret-position="-3192">
               <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#4977#4978#0" expanded="true" />
+                <element signature="e#5005#5006#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -143,11 +156,11 @@
         <option value="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" />
-        <option value="$PROJECT_DIR$/src/Checkers.java" />
-        <option value="$PROJECT_DIR$/src/State.java" />
         <option value="$PROJECT_DIR$/src/InvalidMoveException.java" />
         <option value="$PROJECT_DIR$/src/CheckersPlayer.java" />
+        <option value="$PROJECT_DIR$/src/State.java" />
         <option value="$PROJECT_DIR$/src/Piece.java" />
+        <option value="$PROJECT_DIR$/src/Checkers.java" />
       </list>
     </option>
   </component>
@@ -304,6 +317,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4977#4978#0" expanded="true" />
+            <element signature="e#5005#5006#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -385,13 +403,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java" />
-    <entry file="file://$PROJECT_DIR$/src/Checkers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/State/js.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -399,10 +410,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/InvalidMoveException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CheckersPlayer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/State.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4343">
-          <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
+        <state relative-caret-position="1948">
+          <caret line="614" column="9" lean-forward="true" selection-start-line="614" selection-start-column="9" selection-end-line="614" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1756#1757#0" expanded="true" />
@@ -423,20 +448,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/InvalidMoveException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CheckersPlayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Piece.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -446,6 +457,18 @@
             <element signature="e#432#433#0" expanded="true" />
             <element signature="e#486#487#0" expanded="true" />
             <element signature="e#520#521#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Checkers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3192">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4977#4978#0" expanded="true" />
+            <element signature="e#5005#5006#0" expanded="true" />
           </folding>
         </state>
       </provider>
