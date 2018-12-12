@@ -1,3 +1,3 @@
-public class QuiesenceCheckersPlayer extends CheckersPlayer {
+public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
 
 }
