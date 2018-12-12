@@ -15,7 +15,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
     private static Font legendFont = new Font("Arial", Font.BOLD, 12);
     private static Color toolTipColor = new Color(255, 255, 255, 128);
 
-    public OthelloPanel(State initialState, CheckersPlayer player1, CheckersPlayer player2) {
+    public CheckersPanel(State initialState, CheckersPlayer player1, CheckersPlayer player2) {
         state = initialState;
         highlight = new Piece(0, 0);
         mousePresent = false;

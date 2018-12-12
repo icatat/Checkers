@@ -41,7 +41,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
      * Constructs a new <code>GraphicalUserInterface</code>.
      */
     public GraphicalUserInterface() {
-        super("Drexel University Intro. AI Othello Game");
+        super("Checkers Game");
         player1 = null;
         player2 = null;
         panel = null;
@@ -74,7 +74,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
             for (Iterator<Class<? extends CheckersPlayer>> i = ClassCreator.getClassesOfType(
                     CheckersPlayer.class).iterator(); i.hasNext();) {
                 Class<?> c = i.next();
-                if (!c.getName().equals("OthelloPlayer")) {
+                if (!c.getName().equals("CheckersPlayer")) {
                     possiblePlayers.add(c.getName());
                     // 		    try {
                     // 			possiblePlayers.addElement((OthelloPlayer)c.newInstance());
@@ -248,7 +248,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
         JSplitPane horiz_split = null;
         if (panel == null) {
             panelWasNull = true;
-            panel = new OthelloPanel(state, player1, player2);
+            panel = new CheckersPanel(state, player1, player2);
             panel.setBorder(new BevelBorder(BevelBorder.RAISED));
 
             JPanel stats = new JPanel();
@@ -377,6 +377,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
 
     public void updateTimeRemaining(CheckersPlayer player, int secondsRemaining) {
         String sr;
+        //TODO check humanCheckersPlayer
         if (player instanceof HumanOthelloPlayer)
             sr = "\u221e"; /* <-- \221e == the infinity symbol */
         else if (secondsRemaining >= 0)
