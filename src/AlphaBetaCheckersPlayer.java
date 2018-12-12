@@ -1,2 +1,2 @@
-public class AlphaBetaCheckersPlayer extends CheckersPlayer {
+public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
 }
