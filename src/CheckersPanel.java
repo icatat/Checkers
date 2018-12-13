@@ -1,4 +1,3 @@
-// package edu.drexel.cs.ai.othello;
 
 import javax.swing.*;
 import java.awt.*;
