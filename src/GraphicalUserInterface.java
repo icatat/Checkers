@@ -130,7 +130,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
 
             setLayout(new BorderLayout());
             add(new JScrollPane(selectorPanel), BorderLayout.CENTER);
-            setSize(new Dimension(775, 150));
+            setSize(new Dimension(700, 150));
             setVisible(true);
         }
 
