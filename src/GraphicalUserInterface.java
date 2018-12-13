@@ -378,9 +378,9 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
     public void updateTimeRemaining(CheckersPlayer player, int secondsRemaining) {
         String sr;
         //TODO check humanCheckersPlayer
-        if (player instanceof HumanOthelloPlayer)
-            sr = "\u221e"; /* <-- \221e == the infinity symbol */
-        else if (secondsRemaining >= 0)
+//        if (player instanceof HumanOthelloPlayer)
+//            sr = "\u221e"; /* <-- \221e == the infinity symbol */
+        if (secondsRemaining >= 0)
             sr = Integer.toString(secondsRemaining) + "s";
         else
             sr = "-";
