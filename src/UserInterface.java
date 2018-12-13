@@ -34,4 +34,6 @@ public interface UserInterface {
      * a player has used thus far in the game.
      */
     public void updateTimeUsed(CheckersPlayer player, long millisUsed);
+
+    public void log(String str, Object o);
 }

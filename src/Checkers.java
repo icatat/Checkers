@@ -3,8 +3,8 @@
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 public class Checkers {
     private CheckersPlayer player1;
@@ -84,7 +84,8 @@ public class Checkers {
 
                         Piece moves[] = state.getValidMoves().toArray(new Piece[0]);
 
-                        int next = state.getRandom().nextInt(moves.length);
+                        Random rand = new Random();
+                        int next = rand.nextInt(moves.length);
 
                         // We can change the log
                         log("Randomly moving " + player.getName() + " to " + moves[next].toString()
@@ -218,13 +219,13 @@ public class Checkers {
         for(int i=0; i<args.length; i++){
             if(i==0){
                 try {
-                    checkersPlayers[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
+                    players[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
                 }catch (Exception e1){
                     System.err.println("Error Instantiating Agent for Player 1");
                 }
             }else if(i==1){
                 try {
-                    checkersPlayers[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
+                    players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
                 }catch (Exception e1){
                     System.err.println("Error Instantiating Agent for Player 2");
                 }
@@ -248,12 +249,14 @@ public class Checkers {
         }
 
         for (CheckersPlayer op : players) {
-            MiniMax mm = (MiniMax) op;
-            checkers.log("Stats for " + op.getName() + ":");
-            checkers.log("          Nodes: " + mm.getNodesGenerated());
-            checkers.log("    Evaluations: " + mm.getStaticEvaluations());
-            checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
-            checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
+            if (op instanceof Minimax) {
+                Minimax mm = (Minimax) op;
+                checkers.log("Stats for " + op.getName() + ":");
+                checkers.log("          Nodes: " + mm.getNodesGenerated());
+                checkers.log("    Evaluations: " + mm.getStaticEvaluations());
+                checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
+                checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
+            }
         }
     }
 }
