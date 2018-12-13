@@ -70,10 +70,10 @@ public class State implements Cloneable {
         board[0][5].setPlayer(Player.PLAYER1);
         board[0][7].setPlayer(Player.PLAYER1);
 
+        board[1][0].setPlayer(Player.PLAYER1);
         board[1][2].setPlayer(Player.PLAYER1);
         board[1][4].setPlayer(Player.PLAYER1);
         board[1][6].setPlayer(Player.PLAYER1);
-        board[1][8].setPlayer(Player.PLAYER1);
 
         board[2][1].setPlayer(Player.PLAYER1);
         board[2][3].setPlayer(Player.PLAYER1);
@@ -210,13 +210,13 @@ public class State implements Cloneable {
      * <code>player</code>.
      */
     public boolean isLegalMove(Piece piece, Player player) {
-        int row = move.row;
-        int col = move.col;
+        int row = piece.row;
+        int col = piece.col;
 
         if (board[row][col].getOwner() != Player.EMPTY)
             return false;
         for (Direction d : Direction.values()) {
-            if (wouldJumpAndRemove(move, player, d) != null)
+            if (wouldJumpAndRemove(piece, player, d) != null)
                 return true;
         }
         return false;

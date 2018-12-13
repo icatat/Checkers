@@ -227,7 +227,8 @@ public class Checkers {
                 try {
                     players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
                 }catch (Exception e1){
-                    System.err.println("Error Instantiating Agent for Player 2");
+                	System.err.println(e1.getMessage());
+                    //System.err.println("Error Instantiating Agent for Player 2");
                 }
             }else{
                 turnDuration = Integer.parseInt(args[2]);
