@@ -1,6 +1,10 @@
 import java.util.Date;
 
-public class MiniMaxCheckersPlayer implements Minimax{
+public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
+
+    public MiniMaxCheckersPlayer(String name) {
+        super(name);
+    }
 
     @Override
     public int staticEvaluator(State state) {
@@ -25,5 +29,10 @@ public class MiniMaxCheckersPlayer implements Minimax{
     @Override
     public double getEffectiveBranchingFactor() {
         return 0;
+    }
+
+    @Override
+    public Piece getMove(State var1, Date var2) {
+        return null;
     }
 }

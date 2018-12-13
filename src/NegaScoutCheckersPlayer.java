@@ -1,5 +1,10 @@
+import java.util.Date;
 
-public class NegaScoutCheckersPlayer implements Minimax{
+public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
+    public NegaScoutCheckersPlayer(String name) {
+        super(name);
+    }
+
     @Override
     public int staticEvaluator(State state) {
         return 0;
@@ -23,5 +28,10 @@ public class NegaScoutCheckersPlayer implements Minimax{
     @Override
     public double getEffectiveBranchingFactor() {
         return 0;
+    }
+
+    @Override
+    public Piece getMove(State var1, Date var2) {
+        return null;
     }
 }
