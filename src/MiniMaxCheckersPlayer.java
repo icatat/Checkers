@@ -8,6 +8,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
     private static int totalParents = 0;
+    private static State.Player curOriginalPlayer = null;
 
     public MiniMaxCheckersPlayer(String name) {
         super(name);
@@ -16,7 +17,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
     @Override
     public int staticEvaluator(State state) {
         staticEvaluations++;
-        return state.getScore(state.getCurrentPlayer());
+        return state.getScore(curOriginalPlayer);
     }
 
     @Override
@@ -45,13 +46,14 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
         State optimalState = null;
 
-        int evaluation = Integer.MAX_VALUE;
+        int evaluation = Integer.MIN_VALUE;
+        curOriginalPlayer = curState.getCurrentPlayer();
 
         // Minimax algorithm
         for (State state : successors) {
             int curEval = minValue(state, 1);
 
-            if (curEval < evaluation) {
+            if (curEval > evaluation) {
                 evaluation = curEval;
                 optimalState = state;
             }
