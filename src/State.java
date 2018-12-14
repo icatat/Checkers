@@ -27,7 +27,7 @@ public class State implements Cloneable {
     }
 
     enum Direction {
-        UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT
+        UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT, UPLEFT2, UPRIGHT2, DOWNLEFT2, DOWNRIGHT2
     }
 
     /**
@@ -176,6 +176,14 @@ public class State implements Cloneable {
                         return new Piece(row, col,player);
                 }
                 return null;
+            case UPLEFT2:
+                if(player == Player.PLAYER1 && !move.isKing) {
+                    return null;
+                }
+                if (row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].getOwner() == Player.EMPTY) {
+                    return new Piece(row, col,player);
+                }
+                return null;
             case UPRIGHT:
                 if(player == Player.PLAYER1 && !move.isKing) {
                     return null;
@@ -184,6 +192,15 @@ public class State implements Cloneable {
                     return new Piece(row, col,player);
                 }
                 return null;
+            case UPRIGHT2:
+                if(player == Player.PLAYER1 && !move.isKing) {
+                    return null;
+                }
+                if (row - 1 >= 0 && col + 1 < board[row - 1].length && board[row - 1][col + 1].getOwner() == Player.EMPTY) {
+                    return new Piece(row, col,player);
+                }
+                return null;
+
             case DOWNLEFT:
                 if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
@@ -192,6 +209,15 @@ public class State implements Cloneable {
                     return new Piece(row, col, player);
                 }
                 return null;
+            case DOWNLEFT2:
+                if(player == Player.PLAYER2 && !move.isKing) {
+                    return null;
+                }
+                if (row + 1 < board.length && col - 1 >= 0 && board[row + 1][col - 1].getOwner() == Player.EMPTY) {
+                    return new Piece(row, col,player);
+                }
+                return null;
+
             case DOWNRIGHT:
                 if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
@@ -200,6 +226,15 @@ public class State implements Cloneable {
                     return new Piece(row, col, player);
                 }
                 return null;
+            case DOWNRIGHT2:
+                if(player == Player.PLAYER2 && !move.isKing) {
+                    return null;
+                }
+                if (row + 1 < board.length && col + 1  < board[0].length && board[row + 1][col + 1].getOwner() == Player.EMPTY) {
+                    return new Piece(row, col,player);
+                }
+                return null;
+
             default:
                 return null;
         }
@@ -241,6 +276,7 @@ public class State implements Cloneable {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece m = new Piece(i, j, player);
+                System.out.println(isLegalMove(m, player));
                 if (isLegalMove(m, player)) {
                     moves.add(m);
                 }
@@ -402,7 +438,6 @@ public class State implements Cloneable {
 
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT);
-
         if (bracket != null) {
             found_good_direction = true;
             row = move.row;
@@ -410,6 +445,15 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row - 1][col - 1].owner = Player.EMPTY;
             newState.board[row - 2][col - 2].owner = player;
+        }
+
+        bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT2);
+        if (bracket != null) {
+            found_good_direction = true;
+            row = move.row;
+            col = move.col;
+            newState.board[row][col].owner = Player.EMPTY;
+            newState.board[row - 1][col - 1].owner = player;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT);
@@ -422,6 +466,15 @@ public class State implements Cloneable {
             newState.board[row - 2][col + 2].owner = player;
         }
 
+        bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT2);
+        if (bracket != null) {
+            found_good_direction = true;
+            row = move.row;
+            col = move.col;
+            newState.board[row][col].owner = Player.EMPTY;
+            newState.board[row - 1][col + 1].owner = player;
+        }
+
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT);
         if (bracket != null) {
             found_good_direction = true;
@@ -430,6 +483,15 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col - 1].owner = Player.EMPTY;
             newState.board[row + 2][col - 2].owner = player;
+        }
+
+        bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT2);
+        if (bracket != null) {
+            found_good_direction = true;
+            row = move.row;
+            col = move.col;
+            newState.board[row][col].owner = Player.EMPTY;
+            newState.board[row + 1][col - 1].owner = player;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
@@ -441,6 +503,16 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col + 1].owner = Player.EMPTY;
             newState.board[row + 2][col + 2].owner = player;
+        }
+
+        bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
+        if (bracket != null) {
+            found_good_direction = true;
+            row = move.row;
+            col = move.col;
+
+            newState.board[row][col].owner = Player.EMPTY;
+            newState.board[row + 1][col + 1].owner = player;
         }
 
         if (!found_good_direction) {

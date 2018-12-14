@@ -39,7 +39,9 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
+        System.out.println(state.getCurrentPlayer().name());
         while (state.getStatus() == State.GameStatus.PLAYING) {
+
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
