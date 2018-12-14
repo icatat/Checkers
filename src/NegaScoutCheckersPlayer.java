@@ -26,12 +26,13 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public int staticEvaluator(State state) {
+    	//TODO implement the heuristic to apply
         return 0;
     }
 
     @Override
     public int getNodesGenerated() {
-        return 0;
+        return totalSuccessors;
     }
 
     @Override
@@ -41,12 +42,12 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public double getAveBranchingFactor() {
-        return 0;
+        return (double)totalSuccessors/(double) totalParents;
     }
 
     @Override
     public double getEffectiveBranchingFactor() {
-        return 0;
+        return (double)exploredSuccessors/(double) totalParents;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
         int evaluation = Integer.MIN_VALUE;
 
-        // Minimax algorithm
+        // Choosing max from NegaScout algorithm
         for (State state : successors) {
             int curEval = NegaScout(state, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, System.currentTimeMillis(), deadline);
 
