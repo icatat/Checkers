@@ -305,9 +305,9 @@ public class State implements Cloneable {
             }
         }
         if (player == Player.PLAYER1)
-            p1score = count;
+            p1score = 12 - count;
         else if (player == Player.PLAYER2)
-            p2score = count;
+            p2score = 12 - count;
         return count;
     }
 
@@ -433,7 +433,7 @@ public class State implements Cloneable {
                     "The move sent to GameState.applyMove() was null!");
         }
 
-        if (board[move.row][move.col].getOwner() != Player.EMPTY)
+        if (board[move.row][move.col].getOwner() != player)
             throw new InvalidMoveException(move, getCurrentPlayer(), "The space is not empty!");
 
 
@@ -445,6 +445,10 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row - 1][col - 1].owner = Player.EMPTY;
             newState.board[row - 2][col - 2].owner = player;
+
+//            newState.board[row][col].owner = player;
+//            newState.board[row - 1][col - 1].owner = Player.EMPTY;
+//            newState.board[row - 2][col - 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT2);
@@ -454,6 +458,8 @@ public class State implements Cloneable {
             col = move.col;
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row - 1][col - 1].owner = player;
+//            newState.board[row][col].owner = player;
+//            newState.board[row - 1][col - 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT);
@@ -464,6 +470,10 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row - 1][col + 1].owner = Player.EMPTY;
             newState.board[row - 2][col + 2].owner = player;
+
+//            newState.board[row][col].owner = player;
+//            newState.board[row - 1][col + 1].owner = Player.EMPTY;
+//            newState.board[row - 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT2);
@@ -473,6 +483,9 @@ public class State implements Cloneable {
             col = move.col;
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row - 1][col + 1].owner = player;
+//
+//            newState.board[row][col].owner = player;
+//            newState.board[row - 1][col + 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT);
@@ -483,6 +496,10 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col - 1].owner = Player.EMPTY;
             newState.board[row + 2][col - 2].owner = player;
+
+//            newState.board[row][col].owner = player;
+//            newState.board[row + 1][col - 1].owner = Player.EMPTY;
+//            newState.board[row + 2][col - 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT2);
@@ -492,6 +509,9 @@ public class State implements Cloneable {
             col = move.col;
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col - 1].owner = player;
+
+//            newState.board[row][col].owner = player;
+//            newState.board[row + 1][col - 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
@@ -503,6 +523,10 @@ public class State implements Cloneable {
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col + 1].owner = Player.EMPTY;
             newState.board[row + 2][col + 2].owner = player;
+
+//            newState.board[row][col].owner = player;
+//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
+//            newState.board[row + 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
@@ -513,6 +537,9 @@ public class State implements Cloneable {
 
             newState.board[row][col].owner = Player.EMPTY;
             newState.board[row + 1][col + 1].owner = player;
+//
+//            newState.board[row][col].owner = player;
+//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
         }
 
         if (!found_good_direction) {
