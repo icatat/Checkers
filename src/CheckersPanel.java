@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener {
+class CheckersPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     
@@ -19,8 +19,8 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
         //mousePresent = false;
         this.player1 = player1;
         this.player2 = player2;
-        addMouseListener(this);
-        addMouseMotionListener(this);
+//        addMouseListener(this);
+//        addMouseMotionListener(this);
         setPreferredSize(new Dimension(300, 300));
         setVisible(true);
     }
