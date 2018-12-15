@@ -62,7 +62,6 @@ public class State implements Cloneable {
 
         player = Player.PLAYER1;
 
-
         //Player 1
 
         board[0][1].setPlayer(Player.PLAYER1);
@@ -169,68 +168,68 @@ public class State implements Cloneable {
 
         switch (direction) {
             case UPLEFT:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
                 }
-                if (row - 2 >= 0 && col - 2 >= 0 && board[row - 2][col - 2].getOwner() == Player.EMPTY && board[row - 1][col - 1].getOwner() == getOpponent(player)) {
-                        return new Piece(row, col,player);
+                if (row - 2 >= 0 && col - 2 >= 0 && board[row - 2][col - 2].getOwner() == getCurrentPlayer() && board[row - 1][col - 1].getOwner() == getOpponent(player)) {
+                    return new Piece(row, col,player);
                 }
                 return null;
             case UPLEFT2:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
                 }
-                if (row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].getOwner() == Player.EMPTY) {
+                if (row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].getOwner() == getCurrentPlayer()) {
                     return new Piece(row, col,player);
                 }
                 return null;
             case UPRIGHT:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
                 }
-                if (row - 2 >= 0 && col + 2 < board[row - 2].length && board[row - 2][col + 2].getOwner() == Player.EMPTY && board[row - 1][col + 1].getOwner() == getOpponent(player)) {
+                if (row - 2 >= 0 && col + 2 < board[row - 2].length && board[row - 2][col + 2].getOwner() == getCurrentPlayer() && board[row - 1][col + 1].getOwner() == getOpponent(player)) {
                     return new Piece(row, col,player);
                 }
                 return null;
             case UPRIGHT2:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !move.isKing) {
                     return null;
                 }
-                if (row - 1 >= 0 && col + 1 < board[row - 1].length && board[row - 1][col + 1].getOwner() == Player.EMPTY) {
+                if (row - 1 >= 0 && col + 1 < board[row - 1].length && board[row - 1][col + 1].getOwner() == getCurrentPlayer()) {
                     return new Piece(row, col,player);
                 }
                 return null;
 
             case DOWNLEFT:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !move.isKing) {
                     return null;
                 }
-                if (row + 2 < board.length && col - 2 >= 0 && board[row + 2][col - 2].getOwner() == Player.EMPTY && board[row + 1][col - 1].getOwner() == getOpponent(player)) {
+                if (row + 2 < board.length && col - 2 >= 0 && board[row + 2][col - 2].getOwner() == getCurrentPlayer() && board[row + 1][col - 1].getOwner() == getOpponent(player)) {
                     return new Piece(row, col, player);
                 }
                 return null;
             case DOWNLEFT2:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !move.isKing) {
                     return null;
                 }
-                if (row + 1 < board.length && col - 1 >= 0 && board[row + 1][col - 1].getOwner() == Player.EMPTY) {
+                if (row + 1 < board.length && col - 1 >= 0 && board[row + 1][col - 1].getOwner() == getCurrentPlayer()) {
                     return new Piece(row, col,player);
                 }
                 return null;
 
             case DOWNRIGHT:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !move.isKing) {
                     return null;
                 }
-                if (row + 2 < board.length && col + 2 < board[row + 2].length && board[row + 2][col + 2].getOwner() == Player.EMPTY && board[row + 1][col + 1].getOwner() == getOpponent(player)) {
+                if (row + 2 < board.length && col + 2 < board[row + 2].length && board[row + 2][col + 2].getOwner() == getCurrentPlayer() && board[row + 1][col + 1].getOwner() == getOpponent(player)) {
                     return new Piece(row, col, player);
                 }
                 return null;
             case DOWNRIGHT2:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !move.isKing) {
                     return null;
                 }
-                if (row + 1 < board.length && col + 1  < board[0].length && board[row + 1][col + 1].getOwner() == Player.EMPTY) {
+                if (row + 1 < board.length && col + 1  < board[0].length && board[row + 1][col + 1].getOwner() == getCurrentPlayer()) {
                     return new Piece(row, col,player);
                 }
                 return null;
@@ -248,7 +247,7 @@ public class State implements Cloneable {
         int row = piece.row;
         int col = piece.col;
 
-        if (board[row][col].getOwner() != Player.EMPTY)
+        if ( board[row][col].getOwner() != Player.EMPTY)
             return false;
         for (Direction d : Direction.values()) {
             if (wouldJumpAndRemove(piece, player, d) != null)
@@ -273,10 +272,10 @@ public class State implements Cloneable {
         if (moves != null)
             return moves;
         moves = new HashSet<Piece>();
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece m = new Piece(i, j, player);
-                System.out.println(isLegalMove(m, player));
                 if (isLegalMove(m, player)) {
                     moves.add(m);
                 }
@@ -286,6 +285,12 @@ public class State implements Cloneable {
             validMoves1 = moves;
         else
             validMoves2 = moves;
+
+        System.out.println("Moves" + player + " " + moves.size());
+//        for(Piece p : moves) {
+//            System.out.println(p.toString());
+//        }
+
         return moves;
     }
 
@@ -371,7 +376,10 @@ public class State implements Cloneable {
     public AbstractSet<State> getSuccessors(boolean includePreviousStateReference) {
         if (successors != null)
             return successors;
-        Piece moves[] = getValidMoves().toArray(new Piece[0]);
+        AbstractSet<Piece> movesSet = getValidMoves();
+        Piece moves[] = new Piece[movesSet.size()];
+        moves = movesSet.toArray(moves);
+
         successors = new HashSet<State>(moves.length);
         for (int i = 0; i < moves.length; i++) {
             try {
@@ -433,7 +441,7 @@ public class State implements Cloneable {
                     "The move sent to GameState.applyMove() was null!");
         }
 
-        if (board[move.row][move.col].getOwner() != player)
+        if (board[move.row][move.col].getOwner() != Player.EMPTY)
             throw new InvalidMoveException(move, getCurrentPlayer(), "The space is not empty!");
 
 
@@ -442,13 +450,13 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row - 1][col - 1].owner = Player.EMPTY;
-            newState.board[row - 2][col - 2].owner = player;
-
-//            newState.board[row][col].owner = player;
+//            newState.board[row][col].owner = Player.EMPTY;
 //            newState.board[row - 1][col - 1].owner = Player.EMPTY;
-//            newState.board[row - 2][col - 2].owner = Player.EMPTY;
+//            newState.board[row - 2][col - 2].owner = player;
+
+            newState.board[row][col].owner = player;
+            newState.board[row - 1][col - 1].owner = Player.EMPTY;
+            newState.board[row - 2][col - 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT2);
@@ -456,10 +464,10 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row - 1][col - 1].owner = player;
-//            newState.board[row][col].owner = player;
-//            newState.board[row - 1][col - 1].owner = Player.EMPTY;
+//            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row - 1][col - 1].owner = player;
+            newState.board[row][col].owner = player;
+            newState.board[row - 1][col - 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT);
@@ -467,13 +475,13 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row - 1][col + 1].owner = Player.EMPTY;
-            newState.board[row - 2][col + 2].owner = player;
-
-//            newState.board[row][col].owner = player;
+//            newState.board[row][col].owner = Player.EMPTY;
 //            newState.board[row - 1][col + 1].owner = Player.EMPTY;
-//            newState.board[row - 2][col + 2].owner = Player.EMPTY;
+//            newState.board[row - 2][col + 2].owner = player;
+
+            newState.board[row][col].owner = player;
+            newState.board[row - 1][col + 1].owner = Player.EMPTY;
+            newState.board[row - 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT2);
@@ -481,11 +489,11 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row - 1][col + 1].owner = player;
+//            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row - 1][col + 1].owner = player;
 //
-//            newState.board[row][col].owner = player;
-//            newState.board[row - 1][col + 1].owner = Player.EMPTY;
+            newState.board[row][col].owner = player;
+            newState.board[row - 1][col + 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT);
@@ -493,13 +501,13 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row + 1][col - 1].owner = Player.EMPTY;
-            newState.board[row + 2][col - 2].owner = player;
-
-//            newState.board[row][col].owner = player;
+//            newState.board[row][col].owner = Player.EMPTY;
 //            newState.board[row + 1][col - 1].owner = Player.EMPTY;
-//            newState.board[row + 2][col - 2].owner = Player.EMPTY;
+//            newState.board[row + 2][col - 2].owner = player;
+
+            newState.board[row][col].owner = player;
+            newState.board[row + 1][col - 1].owner = Player.EMPTY;
+            newState.board[row + 2][col - 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT2);
@@ -507,11 +515,11 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row + 1][col - 1].owner = player;
+//            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row + 1][col - 1].owner = player;
 
-//            newState.board[row][col].owner = player;
-//            newState.board[row + 1][col - 1].owner = Player.EMPTY;
+            newState.board[row][col].owner = player;
+            newState.board[row + 1][col - 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
@@ -520,13 +528,13 @@ public class State implements Cloneable {
             row = move.row;
             col = move.col;
 
-            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
+//            newState.board[row + 2][col + 2].owner = player;
+
+            newState.board[row][col].owner = player;
             newState.board[row + 1][col + 1].owner = Player.EMPTY;
-            newState.board[row + 2][col + 2].owner = player;
-
-//            newState.board[row][col].owner = player;
-//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
-//            newState.board[row + 2][col + 2].owner = Player.EMPTY;
+            newState.board[row + 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
@@ -535,11 +543,11 @@ public class State implements Cloneable {
             row = move.row;
             col = move.col;
 
-            newState.board[row][col].owner = Player.EMPTY;
-            newState.board[row + 1][col + 1].owner = player;
-//
-//            newState.board[row][col].owner = player;
-//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
+//            newState.board[row][col].owner = Player.EMPTY;
+//            newState.board[row + 1][col + 1].owner = player;
+////
+            newState.board[row][col].owner = player;
+            newState.board[row + 1][col + 1].owner = Player.EMPTY;
         }
 
         if (!found_good_direction) {
@@ -610,112 +618,112 @@ public class State implements Cloneable {
         return s;
     }
 
-//    /**
-//     * Returns whether or not <code>o</code> is equivalent to this GameState.
-//     *
-//     * @see #uniqueHashCode()
-//     * @see #hashCode()
-//     */
-//    public boolean equals(Object o) {
-//        if (!(o instanceof State))
-//            return false;
-//        State gs = (State) o;
-//        if (gs.player != player)
-//            return false;
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                if (board[i][j] != gs.board[i][j])
-//                    return false;
-//            }
-//        }
-//        return true;
-//    }
-//
-//    private static BigInteger multiplier[] = null;
-//    private static BigInteger two = new BigInteger("2");
-//
-//    /**
-//     * Returns a unique number identifying this GameState.
-//     *
-//     * <p>
-//     * <table>
-//     * <tr>
-//     * <td colspan="4" align="left">The following are always true:</td>
-//     * </tr>
-//     * <tr>
-//     * <td><ul type="disc">
-//     * <li></li></ul></td>
-//     * <td align="right"><code>x.uniqueHashCode() == y.uniqueHashCode()</code></td>
-//     * <td>&rArr;</td>
-//     * <td><code>x.equals(y)</code></td>
-//     * </tr>
-//     * <tr>
-//     * <td><ul type="disc">
-//     * <li></li></ul></td>
-//     * <td align="right"><code>x.equals(y)</code></td>
-//     * <td>&rArr;</td>
-//     * <td><code>x.uniqueHashCode() == y.uniqueHashCode()</code></td>
-//     * </tr>
-//     * <tr>
-//     * <td><ul type="disc">
-//     * <li></li></ul></td>
-//     * <td align="right"><code>x.equals(y)</code></td>
-//     * <td>&rArr;</td>
-//     * <td><code>x.hashCode() == y.hashCode()</code></td>
-//     * </tr>
-//     * <tr>
-//     * <td colspan="4" align="left"><em>However</em>, the following are
-//     * <em>not necessarily</em> true:</td>
-//     * </tr>
-//     * <tr>
-//     * <td><ul type="disc">
-//     * <li></li></ul></td>
-//     * <td align="right"><code>x.hashCode() == y.hashCode()</code></td>
-//     * <td>&rArr;</td>
-//     * <td><code>x.equals(y)</code></td>
-//     * </tr>
-//     * </table>
-//     * </p>
-//     *
-//     * @see #equals(Object)
-//     * @see #hashCode()
-//     */
-//    public BigInteger uniqueHashCode() {
-//        if (hash == null) {
-//            hash = (player == Player.PLAYER1 ? BigInteger.ZERO : BigInteger.ONE);
-//            int i, j, idx = 0;
-//            if (multiplier == null) {
-//                BigInteger three = new BigInteger("3");
-//                multiplier = new BigInteger[64];
-//                multiplier[0] = three;
-//                for (i = 1; i < 64; i++)
-//                    multiplier[i] = multiplier[i - 1].multiply(three);
-//            }
-//            for (i = 0; i < 8; i++) {
-//                for (j = 0; j < 8; j++) {
-//                    Player p = getSquare(i, j);
-//                    if (p == Player.EMPTY)
-//                        idx++;
-//                    else
-//                        hash.add(multiplier[idx++].multiply(p == Player.PLAYER1 ? BigInteger.ONE
-//                                : two));
-//                }
-//            }
-//        }
-//        return hash;
-//    }
-//
-//    /**
-//     * Equivalent to calling {@link Object#hashCode() hashCode()} on
-//     * the result of {@link #uniqueHashCode() uniqueHashCode()}.
-//     *
-//     * @see #equals(Object)
-//     * @see #hashCode()
-//     */
-//    public int hashCode() {
-//        return uniqueHashCode().hashCode();
-//    }
-//
+    /**
+     * Returns whether or not <code>o</code> is equivalent to this GameState.
+     *
+     * @see #uniqueHashCode()
+     * @see #hashCode()
+     */
+    public boolean equals(Object o) {
+        if (!(o instanceof State))
+            return false;
+        State gs = (State) o;
+        if (gs.player != player)
+            return false;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] != gs.board[i][j])
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private static BigInteger multiplier[] = null;
+    private static BigInteger two = new BigInteger("2");
+
+    /**
+     * Returns a unique number identifying this GameState.
+     *
+     * <p>
+     * <table>
+     * <tr>
+     * <td colspan="4" align="left">The following are always true:</td>
+     * </tr>
+     * <tr>
+     * <td><ul type="disc">
+     * <li></li></ul></td>
+     * <td align="right"><code>x.uniqueHashCode() == y.uniqueHashCode()</code></td>
+     * <td>&rArr;</td>
+     * <td><code>x.equals(y)</code></td>
+     * </tr>
+     * <tr>
+     * <td><ul type="disc">
+     * <li></li></ul></td>
+     * <td align="right"><code>x.equals(y)</code></td>
+     * <td>&rArr;</td>
+     * <td><code>x.uniqueHashCode() == y.uniqueHashCode()</code></td>
+     * </tr>
+     * <tr>
+     * <td><ul type="disc">
+     * <li></li></ul></td>
+     * <td align="right"><code>x.equals(y)</code></td>
+     * <td>&rArr;</td>
+     * <td><code>x.hashCode() == y.hashCode()</code></td>
+     * </tr>
+     * <tr>
+     * <td colspan="4" align="left"><em>However</em>, the following are
+     * <em>not necessarily</em> true:</td>
+     * </tr>
+     * <tr>
+     * <td><ul type="disc">
+     * <li></li></ul></td>
+     * <td align="right"><code>x.hashCode() == y.hashCode()</code></td>
+     * <td>&rArr;</td>
+     * <td><code>x.equals(y)</code></td>
+     * </tr>
+     * </table>
+     * </p>
+     *
+     * @see #equals(Object)
+     * @see #hashCode()
+     */
+    public BigInteger uniqueHashCode() {
+        if (hash == null) {
+            hash = (player == Player.PLAYER1 ? BigInteger.ZERO : BigInteger.ONE);
+            int i, j, idx = 0;
+            if (multiplier == null) {
+                BigInteger three = new BigInteger("3");
+                multiplier = new BigInteger[64];
+                multiplier[0] = three;
+                for (i = 1; i < 64; i++)
+                    multiplier[i] = multiplier[i - 1].multiply(three);
+            }
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+                    Player p = getPieceOwner(i, j);
+                    if (p == Player.EMPTY)
+                        idx++;
+                    else
+                        hash.add(multiplier[idx++].multiply(p == Player.PLAYER1 ? BigInteger.ONE
+                                : two));
+                }
+            }
+        }
+        return hash;
+    }
+
+    /**
+     * Equivalent to calling {@link Object#hashCode() hashCode()} on
+     * the result of {@link #uniqueHashCode() uniqueHashCode()}.
+     *
+     * @see #equals(Object)
+     * @see #hashCode()
+     */
+    public int hashCode() {
+        return uniqueHashCode().hashCode();
+    }
+
     public static void main(String[] args) {
         State gs = new State();
         System.out.println(gs);
