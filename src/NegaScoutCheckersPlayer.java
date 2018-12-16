@@ -128,7 +128,6 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
     private boolean isTerminalState(State state, int depth, long startTime,  Date deadline) {
 
         if (depthLimit != -1 && depth >= depthLimit) return true;
-        if (state.getScore(state.getCurrentPlayer()) + state.getScore(state.getOpponent(state.getCurrentPlayer())) >= 64) return true;
         if(state.getStatus() != State.GameStatus.PLAYING) return true;
         if (deadline != null &&  System.currentTimeMillis() - startTime >= deadline.getTime()) return true;
 
