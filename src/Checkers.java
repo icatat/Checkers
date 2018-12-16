@@ -39,7 +39,6 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
-        System.out.println(state.getCurrentPlayer().name());
         while (state.getStatus() == State.GameStatus.PLAYING) {
 
             if (state.getPreviousState() != null
@@ -112,6 +111,7 @@ public class Checkers {
                     ui.handleStateUpdate(state);
                     validMove = false;
                 }
+                if (state == state.getPreviousState()) validMove = false;
             } while (!validMove);
         }
 

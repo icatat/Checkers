@@ -158,11 +158,12 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     private int quiesenceSearch(int alpha, int beta, State state, int depth) {
         int score = staticEvaluator(state);
-        if (score >= beta) return score;
+        if (score >= beta || state == null) return score;
         AbstractSet<Piece> successors = state.getValidMoves();
         depth++;
-        System.out.println(depth);
         for (Piece p : successors) {
+            if (p == null) continue;
+            if (state == null) continue;
             state.applyMove(p);
             score = -quiesenceSearch(-alpha, -beta, state, depth);
             state = state.getPreviousState();

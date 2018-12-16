@@ -275,7 +275,7 @@ public class State implements Cloneable {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                Piece m = new Piece(i, j, player);
+                Piece m = new Piece(i, j, getPieceOwner(i, j));
                 if (isLegalMove(m, player)) {
                     moves.add(m);
                 }
@@ -286,10 +286,6 @@ public class State implements Cloneable {
         else
             validMoves2 = moves;
 
-        System.out.println("Moves" + player + " " + moves.size());
-//        for(Piece p : moves) {
-//            System.out.println(p.toString());
-//        }
 
         return moves;
     }
@@ -303,16 +299,16 @@ public class State implements Cloneable {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getOwner() == player && board[i][j].isKing) {
-                    count += 2; //because king means there are 2 pieces stack on each other
+                    count += 10; //because king means there are 2 pieces stack on each other
                 } else if (board[i][j].getOwner() == player) {
                     count++;
                 }
             }
         }
         if (player == Player.PLAYER1)
-            p1score = 12 - count;
+            p1score = count;
         else if (player == Player.PLAYER2)
-            p2score = 12 - count;
+            p2score = count;
         return count;
     }
 
@@ -331,25 +327,51 @@ public class State implements Cloneable {
         }
     }
 
+    public int getNumPieces(Player p) {
+        int count = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getOwner() == p) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
     /**
      * Returns the current status of the game.
      */
+//    public GameStatus getStatus() {
+//        if (getNumPieces(getCurrentPlayer()) + getNumPieces(getOpponent(getCurrentPlayer())) == 0 ||
+//                getNumPieces(getCurrentPlayer()) == getNumPieces(getOpponent(getCurrentPlayer())) &&
+//                        getNumPieces(getOpponent(getCurrentPlayer())) != 12 ||
+//                ((getValidMoves(Player.PLAYER1).size() <= 0 || getValidMoves(Player.PLAYER2).size() <= 0)) && getPreviousState() != null) {
+//            int p1score = getScore(Player.PLAYER1);
+//            int p2score = getScore(Player.PLAYER2);
+//            if (p1score > p2score)
+//                return GameStatus.PLAYER1WON;
+//            else if (p1score < p2score)
+//                return GameStatus.PLAYER2WON;
+//            else
+//                return GameStatus.TIE;
+//        }
+//        else {
+//            return GameStatus.PLAYING;
+//        }
+//    }
+
     public GameStatus getStatus() {
-        if (getValidMoves(Player.PLAYER1).size() <= 0 && getValidMoves(Player.PLAYER2).size() <= 0) {
-            int p1score = getScore(Player.PLAYER1);
-            int p2score = getScore(Player.PLAYER2);
-            if (p1score > p2score)
-                return GameStatus.PLAYER1WON;
-            else if (p1score < p2score)
+        if (getNumPieces(Player.PLAYER1) == 0 || (getValidMoves(Player.PLAYER1).size() <= 0 && getPreviousState() != null)) {
                 return GameStatus.PLAYER2WON;
-            else
-                return GameStatus.TIE;
+        } else if (getNumPieces(Player.PLAYER2) == 0 || (getValidMoves(Player.PLAYER2).size() <= 0 && getPreviousState() != null)) {
+                return GameStatus.PLAYER1WON;
+        } else if (getNumPieces(Player.PLAYER2) == getNumPieces(Player.PLAYER1)  && getNumPieces(Player.PLAYER2) != 12) {
+            return GameStatus.TIE;
         }
         else {
             return GameStatus.PLAYING;
         }
     }
-
     /**
      * Equivalent to {@link #getSuccessors(boolean) getSuccessors(true)}.
      *
@@ -382,14 +404,25 @@ public class State implements Cloneable {
 
         successors = new HashSet<State>(moves.length);
         for (int i = 0; i < moves.length; i++) {
+            if (moves[i] == null) continue;
             try {
-                successors.add(applyMove(moves[i], includePreviousStateReference));
+                State temp = (State)this.clone();
+                State newTemp = (State)applyMove(moves[i], includePreviousStateReference).clone();
+
+                while (!temp.equals(newTemp) && temp.getNumPieces(getOpponent(getCurrentPlayer())) - newTemp.getNumPieces(getOpponent(getCurrentPlayer())) == 1 ) {
+                    temp = (State)newTemp.clone();
+                    newTemp = (State)temp.applyMove(moves[i], includePreviousStateReference).clone();
+                    System.out.println(temp);
+                }
+                temp.player = getOpponent(player);
+                successors.add(temp);
             }
             catch (InvalidMoveException ime) {
                 /* This should not happen! */
 //                System.err.println(ime.toString());
             }
         }
+
         return successors;
     }
 
@@ -437,8 +470,9 @@ public class State implements Cloneable {
         newState.move = move;
 
         if (move == null) {
-            throw new InvalidMoveException(move, getCurrentPlayer(),
-                    "The move sent to GameState.applyMove() was null!");
+            return newState;
+//            throw new InvalidMoveException(move, getCurrentPlayer(),
+//                    "The move sent to GameState.applyMove() was null!");
         }
 
         if (board[move.row][move.col].getOwner() != Player.EMPTY)
@@ -450,9 +484,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row - 1][col - 1].owner = Player.EMPTY;
-//            newState.board[row - 2][col - 2].owner = player;
 
             newState.board[row][col].owner = player;
             newState.board[row - 1][col - 1].owner = Player.EMPTY;
@@ -464,8 +495,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row - 1][col - 1].owner = player;
             newState.board[row][col].owner = player;
             newState.board[row - 1][col - 1].owner = Player.EMPTY;
         }
@@ -475,9 +504,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row - 1][col + 1].owner = Player.EMPTY;
-//            newState.board[row - 2][col + 2].owner = player;
 
             newState.board[row][col].owner = player;
             newState.board[row - 1][col + 1].owner = Player.EMPTY;
@@ -489,9 +515,7 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row - 1][col + 1].owner = player;
-//
+
             newState.board[row][col].owner = player;
             newState.board[row - 1][col + 1].owner = Player.EMPTY;
         }
@@ -501,9 +525,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row + 1][col - 1].owner = Player.EMPTY;
-//            newState.board[row + 2][col - 2].owner = player;
 
             newState.board[row][col].owner = player;
             newState.board[row + 1][col - 1].owner = Player.EMPTY;
@@ -515,8 +536,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row + 1][col - 1].owner = player;
 
             newState.board[row][col].owner = player;
             newState.board[row + 1][col - 1].owner = Player.EMPTY;
@@ -527,10 +546,6 @@ public class State implements Cloneable {
             found_good_direction = true;
             row = move.row;
             col = move.col;
-
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row + 1][col + 1].owner = Player.EMPTY;
-//            newState.board[row + 2][col + 2].owner = player;
 
             newState.board[row][col].owner = player;
             newState.board[row + 1][col + 1].owner = Player.EMPTY;
@@ -543,22 +558,12 @@ public class State implements Cloneable {
             row = move.row;
             col = move.col;
 
-//            newState.board[row][col].owner = Player.EMPTY;
-//            newState.board[row + 1][col + 1].owner = player;
-////
             newState.board[row][col].owner = player;
             newState.board[row + 1][col + 1].owner = Player.EMPTY;
         }
-
         if (!found_good_direction) {
-            throw new InvalidMoveException(move, player,
-                    "This move does not flip any of the opponents' pieces!");
+            return this;
         }
-
-        newState.player = getOpponent(player);
-
-        if (newState.getValidMoves().size() <= 0)
-            /* the other player has no valid moves, so their turn is skipped */
             newState.player = player;
 
         return newState;

@@ -4,7 +4,7 @@ import java.util.Date;
 public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
 
     // Based on the experiment result depthLimit is set to 4.
-    private int depthLimit = 4;
+    private int depthLimit = -1;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
@@ -76,9 +76,11 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     private boolean isTerminalState(State state, int depth) {
 
-        if (depthLimit != -1 && depth >= depthLimit) return true;
+        if (state == null || depthLimit != -1 && depth >= depthLimit) return true;
 
-        if(state.getStatus() != State.GameStatus.PLAYING) return true;
+        if(state.getStatus() != State.GameStatus.PLAYING) {
+            return true;
+        }
 
         return false;
 

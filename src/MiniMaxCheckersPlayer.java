@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
-    private int depthLimit = 4;
+    private int depthLimit = -1;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
@@ -16,6 +16,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public int staticEvaluator(State state) {
+        if (state == null) return 0;
         staticEvaluations++;
         return state.getScore(curOriginalPlayer);
     }
@@ -127,7 +128,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     private boolean isTerminalState(State state, int depth) {
 
-        if (depthLimit != -1 && depth >= depthLimit) return true;
+        if (state == null || depthLimit != -1 && depth >= depthLimit) return true;
 
         if(state.getStatus() != State.GameStatus.PLAYING) {
             return true;
