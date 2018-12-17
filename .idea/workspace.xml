@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bb9f5d6-9db4-4947-842b-8087055f01d3" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/CheckersPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckersPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameState2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameState2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Move.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Square.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Square.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -43,12 +39,12 @@
       <file leaf-file-name="QuiesenceCheckersPlayer.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2850">
-              <caret line="190" column="47" selection-start-line="190" selection-start-column="47" selection-end-line="190" selection-end-column="47" />
+            <state relative-caret-position="-2296">
+              <caret line="40" column="60" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#457#458#0" expanded="true" />
-                <element signature="e#484#485#0" expanded="true" />
+                <element signature="e#558#559#0" expanded="true" />
+                <element signature="e#585#586#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -233,11 +229,11 @@
         <option value="$PROJECT_DIR$/src/NegaScoutCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" />
-        <option value="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/CheckersPanel.java" />
         <option value="$PROJECT_DIR$/src/Move.java" />
         <option value="$PROJECT_DIR$/src/Square.java" />
         <option value="$PROJECT_DIR$/src/GameState2.java" />
+        <option value="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" />
       </list>
     </option>
   </component>
@@ -310,6 +306,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="23" width="1215" height="758" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -495,8 +492,8 @@
           <caret line="2" column="27" lean-forward="true" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#457#458#0" expanded="true" />
-            <element signature="e#484#485#0" expanded="true" />
+            <element signature="e#558#559#0" expanded="true" />
+            <element signature="e#585#586#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -889,12 +886,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2850">
-          <caret line="190" column="47" selection-start-line="190" selection-start-column="47" selection-end-line="190" selection-end-column="47" />
+        <state relative-caret-position="-2296">
+          <caret line="40" column="60" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#457#458#0" expanded="true" />
-            <element signature="e#484#485#0" expanded="true" />
+            <element signature="e#558#559#0" expanded="true" />
+            <element signature="e#585#586#0" expanded="true" />
           </folding>
         </state>
       </provider>

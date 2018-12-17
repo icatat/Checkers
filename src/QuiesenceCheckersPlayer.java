@@ -1,3 +1,4 @@
+import javax.swing.plaf.nimbus.State;
 import java.util.Date;
 import java.util.AbstractSet;
 public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
@@ -37,15 +38,15 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
         AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
         GameState2 optimalState = null;
-        GameState2.Player curOriginalPlayer = currentState.getCurrentPlayer();
+        curOriginalPlayer = currentState.getCurrentPlayer();
 
-        int evaluation = Integer.MAX_VALUE;
+        int evaluation = Integer.MIN_VALUE;
 
         // Minimax with alpha beta pruning
         for (GameState2 state : successors) {
             int curEval = minValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 
-            if (curEval < evaluation) {
+            if (curEval > evaluation) {
                 evaluation = curEval;
                 optimalState = state;
             }
