@@ -81,6 +81,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                         g.fillRect(col * square_width + col + 1, row * square_height + row + 1,
                                 square_width, square_height);
                     }
+
                     //TODO changed it to getPiece but check what the necessary method is
                     GameState2.Player owner = state.getPieceOwner(row, col);
                     //g.setColor((owner == GameState.Player.PLAYER1 ? Color.WHITE : Color.BLACK));
@@ -93,6 +94,12 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                         //+ row + square_height / 4, square_width / 2, square_height / 2);
                     } else if (owner == GameState2.Player.PLAYER2) {
                         g.setColor(p2);
+                        g.fillOval(col * square_width + col, row * square_height + row,
+                                square_width, square_height);
+                    }
+
+                    if (state.isKing(row, col)) {
+                        g.setColor(Color.BLACK);
                         g.fillOval(col * square_width + col, row * square_height + row,
                                 square_width, square_height);
                     }
