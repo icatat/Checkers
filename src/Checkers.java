@@ -13,9 +13,19 @@ public class Checkers {
     private long p2timeUsed;
     private int turnDuration;
 
-    private State state;
+    private GameState2 state;
 
     private UserInterface ui;
+
+    /**
+     * The release version of this code.
+     */
+    public static final String VERSION = "1.1";
+    /**
+     * The release date of this code.
+     */
+    public static final String REV_DATE = "2006-11-05";
+
 
     public Checkers(CheckersPlayer player1, CheckersPlayer player2, UserInterface ui) {
         this.player1 = player1;
@@ -23,7 +33,7 @@ public class Checkers {
         this.p1timeUsed = 0;
         this.p2timeUsed = 0;
         this.turnDuration = 5;
-        this.state = new State();
+        this.state = new GameState2();
         this.ui = ui;
 
     }
@@ -39,28 +49,29 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
-        System.out.println(state.getCurrentPlayer().name());
-        while (state.getStatus() == State.GameStatus.PLAYING) {
-
+        System.out.println(state);
+        while (state.getStatus() == GameState2.GameStatus.PLAYING && (state.getPreviousState() == null || state.getCurrentPlayer() != state.getPreviousState().getCurrentPlayer())) {
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
                 // We can change the log.
-                log((state.getCurrentPlayer() == State.Player.PLAYER1 ? player1.getName()
+                log((state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? player1.getName()
                         : player2.getName())
                         + " gets to go again!");
 
             ui.handleStateUpdate(state);
 
-            CheckersPlayer player = (state.getCurrentPlayer() == State.Player.PLAYER1 ? player1
+            CheckersPlayer player = (state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? player1
                     : player2);
+
             boolean validMove;
+
             do {
                 validMove = true;
 
-                Piece move;
+                Move move;
 
-                if (turnDuration <= 0) {
+                if (turnDuration <= 0 || player instanceof HumanCheckersPlayer) {
                     ui.updateTimeRemaining(player, -1);
 
                     Date start = new Date();
@@ -68,7 +79,7 @@ public class Checkers {
                     Date end = new Date();
                     ui.updateTimeRemaining(player, -1);
 
-                    if (state.getCurrentPlayer() == State.Player.PLAYER1) {
+                    if (state.getCurrentPlayer() == GameState2.Player.PLAYER1) {
                         p1timeUsed += end.getTime() - start.getTime();
                         ui.updateTimeUsed(player, p1timeUsed);
                     }
@@ -81,22 +92,20 @@ public class Checkers {
                     try {
                         move = playerTimerThread.getMove(turnDuration);
                     } catch (TimeoutException te) {
-
                         log(te.getMessage());
 
-                        Piece moves[] = state.getValidMoves().toArray(new Piece[0]);
+                        Move moves[] = state.getValidMoves().toArray(new Move[0]);
 
-                        Random rand = new Random();
-                        int next = rand.nextInt(moves.length);
+                        int next = state.getRandom().nextInt(moves.length);
 
                         // We can change the log
-                        log("Randomly moving " + player.getName() + " to " + moves[next].toString()
+                        log("Randomly moving " + player.getName() + " to " + moves[next].to.toString()
                                 + "...");
 
                         move = moves[next];
                     }
 
-                    if (state.getCurrentPlayer() == State.Player.PLAYER1) {
+                    if (state.getCurrentPlayer() == GameState2.Player.PLAYER1) {
                         p1timeUsed += playerTimerThread.getElapsedMillis();
                         ui.updateTimeUsed(player, p1timeUsed);
                     } else {
@@ -105,13 +114,18 @@ public class Checkers {
                     }
                 }
                 try {
+                    GameState2 original = (GameState2) state.clone();
+                    System.out.println("Orginal" + original);
                     state = state.applyMove(move);
+                    System.out.println(state);
+
                 } catch (RuntimeException rte) {
                     // This can be changed to InvalidMoveException if we want to make a separate class for that
                     log(rte.getMessage());
                     ui.handleStateUpdate(state);
                     validMove = false;
                 }
+
             } while (!validMove);
         }
 
@@ -137,7 +151,7 @@ public class Checkers {
         }
     }
 
-    public State getState() {
+    public GameState2 getState() {
         return state;
     }
 
@@ -145,12 +159,12 @@ public class Checkers {
         Thread thread;
         CheckersPlayer player;
         Date deadline;
-        Piece move;
-        State state;
+        Move move;
+        GameState2 state;
         Date startTime;
         Date endTime;
 
-        public PlayerTimerThread(CheckersPlayer player, State state) {
+        public PlayerTimerThread(CheckersPlayer player, GameState2 state) {
             this.player = player;
             this.state = state;
             move = null;
@@ -159,7 +173,7 @@ public class Checkers {
             endTime = null;
         }
 
-        public Piece getMove(int timeLimitSeconds) throws TimeoutException {
+        public Move getMove(int timeLimitSeconds) throws TimeoutException {
             long sleepInterval = ((long) timeLimitSeconds * 1000) / 60;
             startTime = new Date();
             deadline = new Date(startTime.getTime() + (long) timeLimitSeconds * 1000);
@@ -197,6 +211,7 @@ public class Checkers {
 
         public void run() {
             move = player.getMoveInternal(state, deadline);
+
             if (endTime == null)
                 endTime = new Date();
             thread = null;
@@ -204,61 +219,186 @@ public class Checkers {
 
     }
 
+    static String getSimplifiedClassName(String className) {
+        int lastPeriod = className.lastIndexOf(".");
+        if (lastPeriod < 0)
+            return className;
+        else
+            return className.substring(lastPeriod + 1);
+    }
+
     /**
      * To run Checkers with GUI: java checker <Player1> <Player2> <timeLimit>
      * @param args takes in player1, player 2 and timeLimit
      */
     public static void main(String[] args) {
-        if(args.length > 3 || args.length < 2){
-            System.err.println("Warning: not correct arguments");
-        }
-
-        UserInterface ui = new GraphicalUserInterface();;
-
+        UserInterface ui = null;
+        String[] sarg = new String[4];
+        int sargs = 0;
+        boolean printUse = false;
+        long seed = 0;
+        boolean seedSet = false;
         int turnDuration = -1;
-        CheckersPlayer[] players = new CheckersPlayer[2];
 
-        for(int i=0; i<args.length; i++){
-            if(i==0){
-                try {
-                    players[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
-                }catch (Exception e1){
-                    System.err.println("Error Instantiating Agent for Player 1");
+        for (int i = 0; i < args.length; i++) {
+            if (!args[i].startsWith("-")) {
+                /**
+                 * This is the class name of an agent
+                 */
+                if (sargs < 4)
+                    sarg[sargs++] = args[i];
+                else {
+                    System.err.println("Warning: unexpected argument \"" + args[i] + "\"!");
+                    printUse = true;
                 }
-            }else if(i==1){
-                try {
-                    players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
-                }catch (Exception e1){
-                    System.err.println("Error Instantiating Agent for Player 2");
+            }
+            else if (args[i].equals("-s")) {
+                /**
+                 * Set the seed to the random number generator
+                 */
+                if (i == args.length - 1) {
+                    System.err
+                            .println("Error: -s requires an argument (the number with which to seed the random number generator)");
+                    printUse = true;
                 }
-            }else{
-                turnDuration = Integer.parseInt(args[2]);
+                else {
+                    seed = Long.parseLong(args[++i]);
+                    seedSet = true;
+                }
+            }
+            else if (args[i].equals("-d")) {
+                /**
+                 * Set the maximum turn duration
+                 */
+                if (i == args.length - 1) {
+                    System.err
+                            .println("Error: -d requires an argument (the maximum turn duration in seconds)");
+                    printUse = true;
+                }
+                else {
+                    turnDuration = Integer.parseInt(args[++i]);
+                }
+            }
+            else {
+                System.err.println("Warning: unexpected argument \"" + args[i] + "\"!");
+                printUse = true;
             }
         }
 
-        ui.setPlayers(players[0], players[1]);
+        if (ui == null)
+            ui = new GraphicalUserInterface();
 
+        CheckersPlayer players[];
+
+        if (sargs < 2) {
+            players = ui.getPlayers();
+        }
+        else {
+            players = new CheckersPlayer[2];
+            String player1class = sarg[0];
+            String player1name = (sargs > 2 ? sarg[1] : getSimplifiedClassName(player1class));
+            if (player1name.equals(""))
+                player1name = "Player 1";
+            String player2class = (sargs > 2 ? sarg[2] : sarg[1]);
+            String player2name = (sargs > 3 ? sarg[3] : getSimplifiedClassName(player2class));
+            if (player2name.equals(player1name))
+                player2name = player2name + "2";
+            else if (player2name.equals(""))
+                player2name = "Player 2";
+            try {
+                players[0] = instantiatePlayer(player1class, player1name);
+            }
+            catch (NoSuchMethodException nsme1) {
+                System.err
+                        .println("Error Instantiating Agent: Make sure the agent class for player 1 ("
+                                + player1class
+                                + ")\nhas a constructor that accepts a single string as an argument!");
+                printUse = true;
+            }
+            catch (Exception e1) {
+                System.err.println("Error Instantiating Agent: " + e1.toString());
+                printUse = true;
+            }
+            try {
+                players[1] = instantiatePlayer(player2class, player2name);
+            }
+            catch (NoSuchMethodException nsme2) {
+                System.err
+                        .println("Error Instantiating Agent: Make sure the agent class for player 2 ("
+                                + player2class
+                                + ")\nhas a constructor that accepts a single string as an argument!");
+                printUse = true;
+            }
+            catch (Exception e2) {
+                System.err.println("Error Instantiating Agent: " + e2.toString());
+                printUse = true;
+            }
+        }
+
+        if (printUse) {
+            printUsage();
+            System.exit(1);
+        }
+
+        ui.setPlayers(players[0], players[1]);
+        if (ui instanceof Logger) {
+            players[0].setLogger((Logger) ui);
+            players[1].setLogger((Logger) ui);
+        }
         Checkers checkers = new Checkers(players[0], players[1], ui);
         checkers.turnDuration = turnDuration;
-
+        if (ui instanceof Logger)
+            ((Logger) ui).log(getVersionInfo(), null);
+        else
+            System.out.println(getVersionInfo());
         CheckersPlayer winner = checkers.play();
-
-        // To print winner in the ui
-        if (winner == null) {
+        if (winner == null)
             checkers.log("It was a tie!");
-        }else {
+        else
             checkers.log("The winner was " + winner + "!");
-        }
 
         for (CheckersPlayer op : players) {
             if (op instanceof Minimax) {
                 Minimax mm = (Minimax) op;
-                checkers.log("Stats for " + op.getName() + ":");
+                checkers.log(op.getName() + " Stats:");
                 checkers.log("          Nodes: " + mm.getNodesGenerated());
                 checkers.log("    Evaluations: " + mm.getStaticEvaluations());
                 checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
                 checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
             }
         }
+    }
+
+    static String getVersionInfo() {
+        return "Othello Version " + VERSION + " " + REV_DATE + "\n"
+                + "Copyright 2006--2007, Evan A. Sultanik" + "\n" + "http://www.sultanik.com/"
+                + "\n" + "\n";
+    }
+
+    /**
+     * Prints command line usage information.
+     */
+    public static void printUsage() {
+        System.err.println(getVersionInfo());
+        System.err
+                .println("Usage: othello [options] [player1class [player1name] player2class [player2name]]");
+        System.err.println();
+        System.err.println("  player1class      Class name of the agent for player1");
+        System.err
+                .println("                    (i.e. \"org.drexel.edu.cs.ai.othello.RandomOthelloPlayer\")");
+        System.err.println("  player1name       The name for player1 (i.e. \"Evan's Agent\")");
+        System.err.println("  player2class      Class name of the agent for player2");
+        System.err.println("  player2name       The name for player2");
+        System.err.println();
+        System.err.println("OPTIONS:");
+        System.err.println("         -s  number Seed for the simulator's random number generator.");
+        System.err.println("                    If omitted, time since the epoch is used.");
+        System.err.println("         -nw        Run in console mode (a GUI is used by default)");
+        System.err
+                .println("         -d  number Sets the amount of time (in seconds) an agent has to make");
+        System.err.println("                    its decision each turn (i.e. the deadline).");
+        System.err
+                .println("                    A value <= 0 will result in an infinite deadline (this is");
+        System.err.println("                    the default).");
     }
 }

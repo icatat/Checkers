@@ -1,6 +1,6 @@
 public interface Minimax {
 
-    public int staticEvaluator(State state);
+    public int staticEvaluator(GameState2 state);
 
     public int getNodesGenerated();
 

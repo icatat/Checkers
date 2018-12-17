@@ -15,15 +15,15 @@ public abstract class CheckersPlayer {
         this.logger = logger;
     }
 
-    public abstract Piece getMove(State var1, Date var2);
+    public abstract Move getMove(GameState2 var1, Date var2);
 
     public String getName() {
         return this.name;
     }
 
-    public Piece getMoveInternal(State state, Date deadline) {
+    public Move getMoveInternal(GameState2 state, Date deadline) {
         this.deadline = deadline;
-        Piece var3 = this.getMove(state, deadline);
+        Move var3 = this.getMove(state, deadline);
         this.deadline = null;
         return var3;
     }

@@ -6,7 +6,7 @@ public interface UserInterface {
     /**
      * Callback function for receiving updates to the state of the game.
      */
-    public void handleStateUpdate(State newState);
+    public void handleStateUpdate(GameState2 newState);
 
     /**
      * Causes the user interface to prompt the user for the agents and names for

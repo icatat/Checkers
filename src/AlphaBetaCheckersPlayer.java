@@ -10,24 +10,24 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
     private static int exploredSuccessors = 0;
     private static int totalParents = 0;
 
-    private static State.Player curOriginalPlayer = null;
+    private static GameState2.Player curOriginalPlayer = null;
 
     public AlphaBetaCheckersPlayer(String name) {
         super(name);
     }
 
     @Override
-    public Piece getMove(State curState, Date var2) {
-        AbstractSet<State> successors = curState.getSuccessors(true);
+    public Move getMove(GameState2 curState, Date var2) {
+        AbstractSet<GameState2> successors = curState.getSuccessors(true);
 
-        State optimalState = null;
+        GameState2 optimalState = null;
 
         int evaluation = Integer.MIN_VALUE;
 
         curOriginalPlayer = curState.getCurrentPlayer();
 
         // Minimax with alpha beta pruning
-        for (State state : successors) {
+        for (GameState2 state : successors) {
             int curEval = minValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 
             if (curEval > evaluation) {
@@ -42,8 +42,10 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
     }
 
     @Override
-    public int staticEvaluator(State state) {
+    public int staticEvaluator(GameState2 state) {
+        if (state == null) return 0;
         staticEvaluations++;
+
         return state.getScore(curOriginalPlayer);
     }
 
@@ -74,11 +76,13 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param depth current depth of the state
      * @return true if it terminal state, else return false;
      */
-    private boolean isTerminalState(State state, int depth) {
+    private boolean isTerminalState(GameState2 state, int depth) {
 
-        if (depthLimit != -1 && depth >= depthLimit) return true;
+        if (state == null || depthLimit != -1 && depth >= depthLimit) return true;
 
-        if(state.getStatus() != State.GameStatus.PLAYING) return true;
+        if(state.getStatus() != GameState2.GameStatus.PLAYING) {
+            return true;
+        }
 
         return false;
 
@@ -93,18 +97,18 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param depth current depth of the state
      * @return the maximum value of the evaluation function
      */
-    public int maxValue(State state, int a, int b, int depth) {
+    public int maxValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
             return staticEvaluator(state);
         }
 
         int v = Integer.MIN_VALUE;
-        AbstractSet<State> successors = state.getSuccessors(true);
+        AbstractSet<GameState2> successors = state.getSuccessors(true);
         totalSuccessors += successors.size();
         totalParents++;
         depth++;
 
-        for (State s : successors) {
+        for (GameState2 s : successors) {
             if ( s == null) continue;
 
             exploredSuccessors++;
@@ -129,17 +133,17 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return the minimum value of the evaluation function
      */
 
-    public int minValue(State state, int a, int b, int depth) {
+    public int minValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
             return staticEvaluator(state);
         }
 
         int v = Integer.MAX_VALUE;
-        AbstractSet<State> successors = state.getSuccessors(true);
+        AbstractSet<GameState2> successors = state.getSuccessors(true);
         totalSuccessors+= successors.size();
         totalParents++;
         depth++;
-        for (State s : successors) {
+        for (GameState2 s : successors) {
             if (s == null) continue;
             exploredSuccessors++;
             v = Math.min(v, (maxValue(s, a, b, depth)));

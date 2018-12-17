@@ -7,15 +7,15 @@ public class InvalidMoveException extends RuntimeException {
 
     private static final long serialVersionUID = 1;
 
-    Piece move;
-    State.Player player;
+    Move move;
+    GameState2.Player player;
 
     /**
      * Constructs an <code>InvalidMoveException</code> with the offending move,
      * the player that attempted the invalid move, and a message explaining why
      * the move was invalid.
      */
-    public InvalidMoveException(Piece move, State.Player player, String message) {
+    public InvalidMoveException(Move move, GameState2.Player player, String message) {
         super(message);
         this.move = move;
         this.player = player;
@@ -24,14 +24,14 @@ public class InvalidMoveException extends RuntimeException {
     /**
      * Returns the offending move.
      */
-    public Piece getMove() {
+    public Move getMove() {
         return move;
     }
 
     /**
      * Returns the offending player.
      */
-    public State.Player getPlayer() {
+    public GameState2.Player getPlayer() {
         return player;
     }
 
