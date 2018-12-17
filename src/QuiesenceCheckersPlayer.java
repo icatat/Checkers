@@ -32,16 +32,16 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param deadline maximum amount of time the operation can take
      * @return return the best move for MaxPlayer
      */
-    public Piece getMove(State currentState, Date deadline) {
-        AbstractSet<State> successors = currentState.getSuccessors(true);
+    public Move getMove(GameState2 currentState, Date deadline) {
+        AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
-        State optimalState = null;
-        State.Player currentPlayer = currentState.getCurrentPlayer();
+        GameState2 optimalState = null;
+        GameState2.Player currentPlayer = currentState.getCurrentPlayer();
 
         int evaluation = Integer.MAX_VALUE;
 
         // Minimax with alpha beta pruning
-        for (State state : successors) {
+        for (GameState2 state : successors) {
             int curEval = minValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 
             if (curEval < evaluation) {
@@ -64,11 +64,11 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param depth current depth of the state
      * @return true if it terminal state, else return false;
      */
-    private boolean isTerminalState(State state, int depth) {
+    private boolean isTerminalState(GameState2 state, int depth) {
 
         if (depthLimit != -1 && depth >= depthLimit) return true;
 
-        if(state.getStatus() != State.GameStatus.PLAYING) return true;
+        if(state.getStatus() != GameState2.GameStatus.PLAYING) return true;
 
         return false;
 
@@ -83,18 +83,18 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param depth current depth of the state
      * @return the maximum value of the evaluation function
      */
-    public int maxValue(State state, int a, int b, int depth) {
+    public int maxValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
             return quiesenceSearch(a, b, state, depth);
         }
 
         int v = Integer.MIN_VALUE;
-        AbstractSet<State> successors = state.getSuccessors(true);
+        AbstractSet<GameState2> successors = state.getSuccessors(true);
         totalSuccessors += successors.size();
         totalParents++;
         depth++;
 
-        for (State s : successors) {
+        for (GameState2 s : successors) {
             if ( s == null) continue;
 
             exploredSuccessors++;
@@ -119,17 +119,17 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return the minimum value of the evaluation function
      */
 
-    public int minValue(State state, int a, int b, int depth) {
+    public int minValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
             return quiesenceSearch(a, b, state, depth);
         }
 
         int v = Integer.MAX_VALUE;
-        AbstractSet<State> successors = state.getSuccessors(true);
+        AbstractSet<GameState2> successors = state.getSuccessors(true);
         totalSuccessors+= successors.size();
         totalParents++;
         depth++;
-        for (State s : successors) {
+        for (GameState2 s : successors) {
             if (s == null) continue;
             exploredSuccessors++;
             v = Math.min(v, (maxValue(s, a, b, depth)));
@@ -156,12 +156,12 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      *         return score;
      *     }
      */
-    private int quiesenceSearch(int alpha, int beta, State state, int depth) {
+    private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
         int score = staticEvaluator(state);
         if (score >= beta || state == null) return score;
-        AbstractSet<Piece> successors = state.getValidMoves();
+        AbstractSet<Move> successors = state.getValidMoves();
         depth++;
-        for (Piece p : successors) {
+        for (Move p : successors) {
             if (p == null) continue;
             if (state == null) continue;
             state.applyMove(p);
@@ -185,7 +185,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return the value of the simple static evaluation function
      */
     @Override
-    public int staticEvaluator(State state) {
+    public int staticEvaluator(GameState2 state) {
         staticEvaluations++;
         return state.getScore(state.getCurrentPlayer());
     }

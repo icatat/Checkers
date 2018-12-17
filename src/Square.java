@@ -1,12 +1,12 @@
 
-public class Piece {
+public class Square {
     int row;
     int col;
     static final String[] colnames = new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
     boolean isKing;
-    State.Player owner;
+    GameState2.Player owner;
 
-    public Piece(int newRow, int newCol, State.Player player) {
+    public Square(int newRow, int newCol, GameState2.Player player) {
         this.row = newRow;
         this.col = newCol;
         this.isKing = false;
@@ -14,11 +14,11 @@ public class Piece {
 
     }
 
-    public State.Player getOwner() {
+    public GameState2.Player getOwner() {
         return owner;
     }
 
-    public void setPlayer(State.Player player) {
+    public void setPlayer(GameState2.Player player) {
         this.owner = player;
     }
     public void setKing(int newX, int newY) {

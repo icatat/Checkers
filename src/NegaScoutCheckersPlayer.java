@@ -2,32 +2,33 @@ import java.util.AbstractSet;
 import java.util.Date;
 
 public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
-	
+
 	private int depthLimit = -1;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
     private static int totalParents = 0;
-    private State.Player originalPlayer = null;
-	
+    private GameState2.Player originalPlayer = null;
+
     public NegaScoutCheckersPlayer(String name) {
         super(name);
     }
-    
+
     //constructor with 2 parameters
     public NegaScoutCheckersPlayer(String name, int depthLimit) {
         super(name);
         this.depthLimit = depthLimit;
     }
-    
+
     public int getDepthLimit() {
 		return depthLimit;
 	}
 
     @Override
-    public int staticEvaluator(State state) {
+    public int staticEvaluator(GameState2 state) {
     	//TODO implement the heuristic to apply
-        return 0;
+    	// at the moment, returns the score of the player as heuristic
+        return state.getScore(originalPlayer);
     }
 
     @Override
@@ -51,18 +52,18 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
     }
 
     @Override
-    public Piece getMove(State currentState, Date deadline) {
-    	AbstractSet<State> successors = currentState.getSuccessors(true);
+    public Move getMove(GameState2 currentState, Date deadline) {
+    	AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
-        State optimalState = null;
-        // State.Player currentPlayer = currentState.getCurrentPlayer();
+        GameState2 optimalState = null;
+        // GameState.Player currentPlayer = currentState.getCurrentPlayer();
         // substitute the above line with below
         originalPlayer = currentState.getCurrentPlayer();
 
         int evaluation = Integer.MIN_VALUE;
 
         // Choosing max from NegaScout algorithm
-        for (State state : successors) {
+        for (GameState2 state : successors) {
             int curEval = NegaScout(state, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, System.currentTimeMillis(), deadline);
 
             if (curEval > evaluation) {
@@ -74,9 +75,9 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
         if (optimalState == null) return null;
         return optimalState.getPreviousMove();
     }
-    
+
     /**
-     * 
+     *
      * @param state the state to be evaluated
      * @param depth current depth of the state
      * @param alpha value of the best alternative for max
@@ -85,17 +86,17 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param deadline maximum amount of time the operation can take
      * @return
      */
-    public int NegaScout (State state, int depth, int alpha, int beta, long startTime, Date deadline) {
+    public int NegaScout (GameState2 state, int depth, int alpha, int beta, long startTime, Date deadline) {
 
         if (depth == 0 || isTerminalState(state, depth, startTime, deadline)) {
             return staticEvaluator(state);
         }
         int score = Integer.MIN_VALUE;
         int n = beta;
-        AbstractSet<State>successors = state.getSuccessors(true);
+        AbstractSet<GameState2>successors = state.getSuccessors(true);
         totalSuccessors += successors.size();
         totalParents++;
-        for (State succ : successors) {
+        for (GameState2 succ : successors) {
             if (succ == null) continue;
             exploredSuccessors++;
             int cur = -NegaScout(succ, depth - 1, -n, -alpha, startTime, deadline);
@@ -116,19 +117,19 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
         return score;
     }
-    
+
     /**
      * Check if the state is terminal, or if the depth limit has been exceeded
-     * 
+     *
      * @param state the state to be evaluated
      * @param depth current depth of the state
      * @return true if it terminal state, else return false;
      */
-    private boolean isTerminalState(State state, int depth, long startTime,  Date deadline) {
+    private boolean isTerminalState(GameState2 state, int depth, long startTime, Date deadline) {
 
         if (depthLimit != -1 && depth >= depthLimit) return true;
         if (state.getScore(state.getCurrentPlayer()) + state.getScore(state.getOpponent(state.getCurrentPlayer())) >= 64) return true;
-        if(state.getStatus() != State.GameStatus.PLAYING) return true;
+        if(state.getStatus() != GameState2.GameStatus.PLAYING) return true;
         if (deadline != null &&  System.currentTimeMillis() - startTime >= deadline.getTime()) return true;
 
         return false;

@@ -1,18 +1,23 @@
 
+import javax.swing.plaf.synth.SynthDesktopIconUI;
+import java.sql.Array;
+import java.sql.SQLInput;
 import java.util.*;
 import java.math.BigInteger;
 
-public class State implements Cloneable {
+public class GameState2 implements Cloneable {
     private Player player;
-    private State previous;
-    private Piece move;
-    private HashSet<Piece> validMoves1;
-    private HashSet<Piece> validMoves2;
+    private GameState2 previous;
+    private Move move;
+    private HashSet<Move> validMoves1;
+    private HashSet<Move> validMoves2;
     private int p1score;
     private int p2score;
-    private HashSet<State> successors;
+    private HashSet<GameState2> successors;
+
     private BigInteger hash;
-    private Piece[][] board;
+    private Square[][] board;
+    private Random random;
 
     /**
      * An enumeration of the possible owners of a square in the game board.
@@ -20,7 +25,7 @@ public class State implements Cloneable {
      * @author <a href="http://www.sultanik.com" target="_blank">Evan A.
      *         Sultanik</a>
      */
-    public enum Player {
+    enum Player {
         PLAYER1,
         PLAYER2,
         EMPTY
@@ -47,20 +52,21 @@ public class State implements Cloneable {
      * configuration, a random initial player, and the random number generator
      * seeded to a random value.
      */
-    public State() {
+    public GameState2() {
+        random = new Random();
         init();
     }
 
     private void init() {
-        board = new Piece[8][8];
+        board = new Square[8][8];
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                board[i][j] = new Piece(i, j, Player.EMPTY);
+                board[i][j] = new Square(i, j, Player.EMPTY);
             }
         }
 
-        player = Player.PLAYER1;
+        player = (random.nextInt(2) == 0 ? Player.PLAYER1 : Player.PLAYER2);
 
         //Player 1
 
@@ -111,15 +117,17 @@ public class State implements Cloneable {
      * preceding states are not cloned.
      */
     public Object clone() {
-        State gs = new State();
+        GameState2 gs = new GameState2();
 
-        gs.board = new Piece[8][8];
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
-                gs.board[i][j] = board[i][j];
+                gs.board[i][j].setPlayer(board[i][j].getOwner());
+
         gs.player = player;
         gs.previous = previous;
-        gs.move = move;
+        if (move != null) {
+            gs.move = (Move) move.clone();
+        }
         gs.validMoves1 = null;
         gs.validMoves2 = null;
         gs.p1score = -1; /* force a recount of the scores */
@@ -158,79 +166,99 @@ public class State implements Cloneable {
             return board[row][col].getOwner();
     }
 
-    public Player getOwner(Piece square) {
+    public Player getOwner(Square square) {
         return getPieceOwner(square.row, square.col);
     }
 
-    Piece wouldJumpAndRemove(Piece move, Player player, Direction direction) {
-        int row = move.row;
-        int col = move.col;
+    Move wouldJumpAndRemove(Move move, Player player, Direction direction) {
 
+        Square from = move.from;
+        Square to = move.to;
+
+        int fromRow = from.row;
+        int fromCol = from.col;
+
+        int toRow = to.row;
+        int toCol = to.col;
+
+        int colDist = move.colDist();
+        int rowDist = move.rowDist();
+
+//        if (board[from.row][from.col].getOwner() != getCurrentPlayer()) {
+//            System.out.println(to.getOwner());
+//            return null;
+//        }
+//        if (!from.getOwner().equals(getCurrentPlayer())) {
+//            System.out.println(from.getOwner().equals(getCurrentPlayer()));
+//            return null;
+//        }
+
+//        System.out.println("New Move to Check: " + from + " " + to + " col: " + move.colDist() + " row: " + move.rowDist());
         switch (direction) {
             case UPLEFT:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !from.isKing) {
                     return null;
                 }
-                if (row - 2 >= 0 && col - 2 >= 0 && board[row - 2][col - 2].getOwner() == getCurrentPlayer() && board[row - 1][col - 1].getOwner() == getOpponent(player)) {
-                    return new Piece(row, col,player);
+                if (rowDist == -2 && colDist == -2 && board[toRow + 1][toCol + 1].getOwner() == getOpponent(player)) {
+                    return move;
                 }
                 return null;
             case UPLEFT2:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !from.isKing) {
                     return null;
                 }
-                if (row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1].getOwner() == getCurrentPlayer()) {
-                    return new Piece(row, col,player);
+                if (rowDist == -1 && colDist == -1 ) {
+                    return move;
                 }
                 return null;
             case UPRIGHT:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !from.isKing) {
                     return null;
                 }
-                if (row - 2 >= 0 && col + 2 < board[row - 2].length && board[row - 2][col + 2].getOwner() == getCurrentPlayer() && board[row - 1][col + 1].getOwner() == getOpponent(player)) {
-                    return new Piece(row, col,player);
+                if (rowDist == -2 && colDist == 2 && board[toRow + 1][toCol - 1].getOwner() == getOpponent(player)) {
+                    return move;
                 }
                 return null;
             case UPRIGHT2:
-                if(player == Player.PLAYER2 && !move.isKing) {
+                if(player == Player.PLAYER1 && !from.isKing) {
                     return null;
                 }
-                if (row - 1 >= 0 && col + 1 < board[row - 1].length && board[row - 1][col + 1].getOwner() == getCurrentPlayer()) {
-                    return new Piece(row, col,player);
+                if (rowDist == -1 && colDist == 1) {
+                    return move;
                 }
                 return null;
 
             case DOWNLEFT:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !from.isKing) {
                     return null;
                 }
-                if (row + 2 < board.length && col - 2 >= 0 && board[row + 2][col - 2].getOwner() == getCurrentPlayer() && board[row + 1][col - 1].getOwner() == getOpponent(player)) {
-                    return new Piece(row, col, player);
+                if (rowDist == 2 && colDist == -2 && board[toRow - 1][toCol + 1].getOwner() == getOpponent(player)) {
+                    return move;
                 }
                 return null;
             case DOWNLEFT2:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !from.isKing) {
                     return null;
                 }
-                if (row + 1 < board.length && col - 1 >= 0 && board[row + 1][col - 1].getOwner() == getCurrentPlayer()) {
-                    return new Piece(row, col,player);
+                if (rowDist == 1 && colDist == -1 ) {
+                    return move;
                 }
                 return null;
 
             case DOWNRIGHT:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !from.isKing) {
                     return null;
                 }
-                if (row + 2 < board.length && col + 2 < board[row + 2].length && board[row + 2][col + 2].getOwner() == getCurrentPlayer() && board[row + 1][col + 1].getOwner() == getOpponent(player)) {
-                    return new Piece(row, col, player);
+                if (rowDist == 2 && colDist == 2 && board[toRow - 1][toCol - 1].getOwner() == getOpponent(player)) {
+                    return move;
                 }
                 return null;
             case DOWNRIGHT2:
-                if(player == Player.PLAYER1 && !move.isKing) {
+                if(player == Player.PLAYER2 && !from.isKing) {
                     return null;
                 }
-                if (row + 1 < board.length && col + 1  < board[0].length && board[row + 1][col + 1].getOwner() == getCurrentPlayer()) {
-                    return new Piece(row, col,player);
+                if (rowDist == 1 && colDist == 1 ) {
+                    return move;
                 }
                 return null;
 
@@ -243,14 +271,19 @@ public class State implements Cloneable {
      * Returns <code>true</code> if and only if <code>move</code> is legal for
      * <code>player</code>.
      */
-    public boolean isLegalMove(Piece piece, Player player) {
-        int row = piece.row;
-        int col = piece.col;
+    public boolean isLegalMove(Move move, Player player) {
+        Square from = move.from;
+        Square to = move.to;
 
-        if ( board[row][col].getOwner() != Player.EMPTY)
+        if ( board[from.row][from.col].getOwner() != getCurrentPlayer())
             return false;
+
+        if ( board[to.row][to.col].getOwner() != Player.EMPTY)
+            return false;
+
+
         for (Direction d : Direction.values()) {
-            if (wouldJumpAndRemove(piece, player, d) != null)
+            if (wouldJumpAndRemove(move, player, d) != null)
                 return true;
         }
         return false;
@@ -259,7 +292,7 @@ public class State implements Cloneable {
     /**
      * Returns all valid Moves that may be taken from this state.
      */
-    public AbstractSet<Piece> getValidMoves() {
+    public AbstractSet<Move> getValidMoves() {
         return getValidMoves(getCurrentPlayer());
     }
 
@@ -267,17 +300,27 @@ public class State implements Cloneable {
      * Returns all valid Moves that may be taken by <code>player</code> from
      * this state.
      */
-    public AbstractSet<Piece> getValidMoves(Player player) {
-        HashSet<Piece> moves = (player == Player.PLAYER1 ? validMoves1 : validMoves2);
+    public AbstractSet<Move> getValidMoves(Player player) {
+        HashSet<Move> moves = (player == Player.PLAYER1 ? validMoves1 : validMoves2);
         if (moves != null)
             return moves;
-        moves = new HashSet<Piece>();
+        moves = new HashSet<Move>();
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Piece m = new Piece(i, j, getPieceOwner(i, j));
-                if (isLegalMove(m, player)) {
-                    moves.add(m);
+        for (int yfrom = 0; yfrom < 8; yfrom++) {
+            for (int xfrom = 0; xfrom  < 8; xfrom ++) {
+
+                for (int yto = 0; yto < 8; yto++) {
+                    for (int xto = 0; xto < 8; xto++) {
+
+
+                        Square from = new Square(yfrom, xfrom, getPieceOwner(yfrom, xfrom));
+                        Square to = new Square(yto, xto, getPieceOwner(yto, xto));
+
+                        Move m = new Move(from, to, getCurrentPlayer());
+                        if (isLegalMove(m, player)) {
+                            moves.add(m);
+                        }
+                    }
                 }
             }
         }
@@ -306,9 +349,10 @@ public class State implements Cloneable {
             }
         }
         if (player == Player.PLAYER1)
-            p1score = count;
+            p1score = 12 - count;
         else if (player == Player.PLAYER2)
-            p2score = count;
+            p2score = 12 - count;
+
         return count;
     }
 
@@ -338,34 +382,33 @@ public class State implements Cloneable {
         }
         return count;
     }
+
+    public int countMove(GameState2 newState) {
+        int count = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (newState.getPieceOwner(i,j) == getCurrentPlayer() && this.getPieceOwner(i, j) != getCurrentPlayer()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
     /**
      * Returns the current status of the game.
      */
-//    public GameStatus getStatus() {
-//        if (getNumPieces(getCurrentPlayer()) + getNumPieces(getOpponent(getCurrentPlayer())) == 0 ||
-//                getNumPieces(getCurrentPlayer()) == getNumPieces(getOpponent(getCurrentPlayer())) &&
-//                        getNumPieces(getOpponent(getCurrentPlayer())) != 12 ||
-//                ((getValidMoves(Player.PLAYER1).size() <= 0 || getValidMoves(Player.PLAYER2).size() <= 0)) && getPreviousState() != null) {
-//            int p1score = getScore(Player.PLAYER1);
-//            int p2score = getScore(Player.PLAYER2);
-//            if (p1score > p2score)
-//                return GameStatus.PLAYER1WON;
-//            else if (p1score < p2score)
-//                return GameStatus.PLAYER2WON;
-//            else
-//                return GameStatus.TIE;
-//        }
-//        else {
-//            return GameStatus.PLAYING;
-//        }
-//    }
 
     public GameStatus getStatus() {
+
+        if (getPreviousState() != null && getPreviousState().getCurrentPlayer().equals(getCurrentPlayer())) {
+            if (getCurrentPlayer() == Player.PLAYER1) return GameStatus.PLAYER2WON;
+            return GameStatus.PLAYER1WON;
+        }
         if (getNumPieces(Player.PLAYER1) == 0 || (getValidMoves(Player.PLAYER1).size() <= 0 && getPreviousState() != null)) {
-                return GameStatus.PLAYER2WON;
+            return GameStatus.PLAYER2WON;
         } else if (getNumPieces(Player.PLAYER2) == 0 || (getValidMoves(Player.PLAYER2).size() <= 0 && getPreviousState() != null)) {
-                return GameStatus.PLAYER1WON;
-        } else if (getNumPieces(Player.PLAYER2) == getNumPieces(Player.PLAYER1)  && getNumPieces(Player.PLAYER2) != 12) {
+            return GameStatus.PLAYER1WON;
+        } else if (getValidMoves(Player.PLAYER1).size() <= 0 && getValidMoves(Player.PLAYER2).size() <= 0) {
             return GameStatus.TIE;
         }
         else {
@@ -377,7 +420,7 @@ public class State implements Cloneable {
      *
      * @see #getSuccessors(boolean)
      */
-    public AbstractSet<State> getSuccessors() {
+    public AbstractSet<GameState2> getSuccessors() {
         return getSuccessors(true);
     }
 
@@ -393,29 +436,22 @@ public class State implements Cloneable {
      *
      * @param includePreviousStateReference whether or not the returned states
      *            should have back-references to <code>this</code>.
-     * @see #applyMove(Piece, boolean)
+     * @see #applyMove(Move, boolean)
      */
-    public AbstractSet<State> getSuccessors(boolean includePreviousStateReference) {
+    public AbstractSet<GameState2> getSuccessors(boolean includePreviousStateReference) {
+
         if (successors != null)
             return successors;
-        AbstractSet<Piece> movesSet = getValidMoves();
-        Piece moves[] = new Piece[movesSet.size()];
+        AbstractSet<Move> movesSet = getValidMoves();
+        Move moves[] = new Move[movesSet.size()];
         moves = movesSet.toArray(moves);
+        successors = new HashSet<>();
 
-        successors = new HashSet<State>(moves.length);
         for (int i = 0; i < moves.length; i++) {
+
             if (moves[i] == null) continue;
             try {
-                State temp = (State)this.clone();
-                State newTemp = (State)applyMove(moves[i], includePreviousStateReference).clone();
-
-                while (!temp.equals(newTemp) && temp.getNumPieces(getOpponent(getCurrentPlayer())) - newTemp.getNumPieces(getOpponent(getCurrentPlayer())) == 1 ) {
-                    temp = (State)newTemp.clone();
-                    newTemp = (State)temp.applyMove(moves[i], includePreviousStateReference).clone();
-                    System.out.println(temp);
-                }
-                temp.player = getOpponent(player);
-                successors.add(temp);
+                successors.add(applyMove(moves[i]));
             }
             catch (InvalidMoveException ime) {
                 /* This should not happen! */
@@ -423,18 +459,48 @@ public class State implements Cloneable {
             }
         }
 
+        System.out.println("SUCCESSOR: " + successors);
         return successors;
     }
 
     /**
-     * Equivalent to {@link #applyMove(Piece,boolean) applyMove(move, true)}.
+     * Equivalent to {@link #applyMove(Move,boolean) applyMove(move, true)}.
      *
-     * @see #applyMove(Piece,boolean)
+     * @see #applyMove(Move,boolean)
      */
-    public State applyMove(Piece move) throws InvalidMoveException {
-        return applyMove(move, true);
+    public GameState2 applyMove(Move move) throws InvalidMoveException {
+        GameState2 original = (GameState2)clone();
+        GameState2 newState = applyMoveRecurse(original, move);
+//        GameState2 newState = (GameState2) original.applyMove(move, true).clone();
+        newState.switchPlayer();
+
+        return newState;
     }
 
+    public GameState2 applyMoveRecurse(GameState2 state, Move move) {
+
+        if (state.equals(state.getPreviousState())) {
+            return state;
+        }
+        GameState2 newState = (GameState2) state.clone();
+        try {
+            newState = newState.applyMove(move, true);
+
+        } catch (Exception e) {
+            return newState;
+        }
+
+        AbstractSet<Move> validMoves = newState.getValidMoves();
+
+        for (Move m: validMoves) {
+
+            if (m.from.col != move.to.col || m.from.row != move.to.row) continue;
+            GameState2 original = (GameState2) newState.clone();
+            original.applyMove(m);
+        }
+
+        return newState;
+    }
     /**
      * Returns the GameState resulting from applying the given move to this
      * state.
@@ -459,125 +525,131 @@ public class State implements Cloneable {
      * @throws InvalidMoveException if <code>move</code> is not a valid move
      *             from this state.
      */
-    public State applyMove(Piece move, boolean includePreviousStateReference) {
-        Piece bracket;
+    public GameState2 applyMove(Move move, boolean includePreviousStateReference) {
+        Move bracket;
         boolean found_good_direction = false;
-        int row;
-        int col;
-        State newState = (State) clone();
-        Player player = getCurrentPlayer();
-        newState.previous = (includePreviousStateReference ? this : null);
-        newState.move = move;
 
-        if (move == null) {
-            return newState;
-//            throw new InvalidMoveException(move, getCurrentPlayer(),
-//                    "The move sent to GameState.applyMove() was null!");
+
+        GameState2 newState = (GameState2) clone();
+        Player player = getCurrentPlayer();
+
+        newState.previous = (includePreviousStateReference ? this : null);
+        newState.move = (Move)move.clone();
+
+        Square from = move.from;
+        Square to = move.to;
+
+        if (to == null) {
+            throw new InvalidMoveException(move, getCurrentPlayer(),
+                    "The move sent to GameState.applyMove() was null!");
+        }
+        if (from == null) {
+            throw new InvalidMoveException(move, getCurrentPlayer(),
+                    "The move sent to GameState.applyMove() was null!");
         }
 
-        if (board[move.row][move.col].getOwner() != Player.EMPTY)
+        if (board[to.row][to.col].getOwner() != Player.EMPTY) {
             throw new InvalidMoveException(move, getCurrentPlayer(), "The space is not empty!");
+        }
 
+        if (board[from.row][from.col].getOwner() != getCurrentPlayer()) {
+            throw new InvalidMoveException(move, getCurrentPlayer(), "This piece is  not yours!");
+        }
+
+        int fromRow = from.row;
+        int fromCol = from.col;
+
+        int toRow = to.row;
+        int toCol = to.col;
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
 
-            newState.board[row][col].owner = player;
-            newState.board[row - 1][col - 1].owner = Player.EMPTY;
-            newState.board[row - 2][col - 2].owner = Player.EMPTY;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[toRow + 1][toCol + 1].setPlayer(Player.EMPTY);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
+
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT2);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
-            newState.board[row][col].owner = player;
-            newState.board[row - 1][col - 1].owner = Player.EMPTY;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
+
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[toRow + 1][toCol - 1].setPlayer(Player.EMPTY);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
-            newState.board[row][col].owner = player;
-            newState.board[row - 1][col + 1].owner = Player.EMPTY;
-            newState.board[row - 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT2);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
-            newState.board[row][col].owner = player;
-            newState.board[row - 1][col + 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
 
-            newState.board[row][col].owner = player;
-            newState.board[row + 1][col - 1].owner = Player.EMPTY;
-            newState.board[row + 2][col - 2].owner = Player.EMPTY;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[toRow - 1][toCol + 1].setPlayer(Player.EMPTY);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
+
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT2);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
-            newState.board[row][col].owner = player;
-            newState.board[row + 1][col - 1].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[toRow - 1][toCol - 1].setPlayer(Player.EMPTY);;
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
-            newState.board[row][col].owner = player;
-            newState.board[row + 1][col + 1].owner = Player.EMPTY;
-            newState.board[row + 2][col + 2].owner = Player.EMPTY;
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
         if (bracket != null) {
             found_good_direction = true;
-            row = move.row;
-            col = move.col;
 
-            newState.board[row][col].owner = player;
-            newState.board[row + 1][col + 1].owner = Player.EMPTY;
+            newState.board[toRow][toCol].setPlayer(player);
+            newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
+
         }
-        if (!found_good_direction) {
-            return this;
-        }
-            newState.player = player;
+
+
 
         return newState;
     }
 
+    public void switchPlayer() {
+        player = getOpponent(getCurrentPlayer());
+    }
     /**
      * Returns the previous state (or <code>null</code> if this is the initial
      * state). This function may also return <code>null</code> if
      * <code>this</code> was created without a back-reference to the previous
      * state (to save memory).
      *
-     * @see #applyMove(Piece, boolean)
+     * @see #applyMove(Move, boolean)
      */
-    public State getPreviousState() {
+    public GameState2 getPreviousState() {
         return previous;
     }
 
@@ -585,7 +657,7 @@ public class State implements Cloneable {
      * Returns the previous move that was used to get to this state (or
      * <code>null</code> if this is the initial state).
      */
-    public Piece getPreviousMove() {
+    public Move getPreviousMove() {
         return move;
     }
 
@@ -630,14 +702,14 @@ public class State implements Cloneable {
      * @see #hashCode()
      */
     public boolean equals(Object o) {
-        if (!(o instanceof State))
+        if (!(o instanceof GameState2))
             return false;
-        State gs = (State) o;
+        GameState2 gs = (GameState2) o;
         if (gs.player != player)
             return false;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board[i][j] != gs.board[i][j])
+                if (getPieceOwner(i, j) != gs.getPieceOwner(i, j))
                     return false;
             }
         }
@@ -730,11 +802,16 @@ public class State implements Cloneable {
     }
 
     public static void main(String[] args) {
-        State gs = new State();
-        System.out.println(gs);
-        System.out.println("Successors:");
-        State succ[] = gs.getSuccessors().toArray(new State[0]);
+        GameState2 gs = new GameState2();
+        GameState2 succ[] = gs.getSuccessors().toArray(new GameState2[0]);
         for (int i = 0; i < succ.length; i++)
             System.out.println(succ[i]);
+    }
+
+    /**
+     * Returns the random number generator for this game.
+     */
+    public Random getRandom() {
+        return random;
     }
 }

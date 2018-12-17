@@ -14,7 +14,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
     
     private static final long serialVersionUID = 1;
     
-    State state;
+    GameState2 state;
     //TODO check if panel is needed
     CheckersPanel panel;
     private CheckersPlayer player1, player2;
@@ -237,7 +237,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
         }
     }
 
-    public void handleStateUpdate(State newState) {
+    public void handleStateUpdate(GameState2 newState) {
         state = newState;
         if (player1 == null || player2 == null)
             return; /*
@@ -332,7 +332,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
         else {
             panel.updateState(state);
         }
-        if (state.getCurrentPlayer() == State.Player.PLAYER1) {
+        if (state.getCurrentPlayer() == GameState2.Player.PLAYER1) {
             arrow1.setVisible(true);
             arrow2.setVisible(false);
         }
@@ -346,8 +346,8 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
     }
 
     void updateScores() {
-        score1.setText(Integer.toString(state.getScore(State.Player.PLAYER1)));
-        score2.setText(Integer.toString(state.getScore(State.Player.PLAYER2)));
+        score1.setText(Integer.toString(state.getScore(GameState2.Player.PLAYER1)));
+        score2.setText(Integer.toString(state.getScore(GameState2.Player.PLAYER2)));
     }
 
     /**
@@ -378,7 +378,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
     public void updateTimeRemaining(CheckersPlayer player, int secondsRemaining) {
         String sr;
         //TODO check humanCheckersPlayer
-//        if (player instanceof HumanOthelloPlayer)
+//        if (player instanceof HumanCheckersPlayer)
 //            sr = "\u221e"; /* <-- \221e == the infinity symbol */
         if (secondsRemaining >= 0)
             sr = Integer.toString(secondsRemaining) + "s";
