@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
-	private int depthLimit = -1;
+    private int depthLimit = -1;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
@@ -21,13 +21,13 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
     }
 
     public int getDepthLimit() {
-		return depthLimit;
-	}
+        return depthLimit;
+    }
 
     @Override
     public int staticEvaluator(GameState2 state) {
-    	//TODO implement the heuristic to apply
-    	// at the moment, returns the score of the player as heuristic
+        //TODO implement the heuristic to apply
+        // at the moment, returns the score of the player as heuristic
         return state.getScore(originalPlayer);
     }
 
@@ -53,10 +53,10 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public Move getMove(GameState2 currentState, Date deadline) {
-    	AbstractSet<GameState2> successors = currentState.getSuccessors(true);
+        AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
         GameState2 optimalState = null;
-        // GameState.Player currentPlayer = currentState.getCurrentPlayer();
+        // State.Player currentPlayer = currentState.getCurrentPlayer();
         // substitute the above line with below
         originalPlayer = currentState.getCurrentPlayer();
 
@@ -125,10 +125,9 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param depth current depth of the state
      * @return true if it terminal state, else return false;
      */
-    private boolean isTerminalState(GameState2 state, int depth, long startTime, Date deadline) {
+    private boolean isTerminalState(GameState2 state, int depth, long startTime,  Date deadline) {
 
         if (depthLimit != -1 && depth >= depthLimit) return true;
-        if (state.getScore(state.getCurrentPlayer()) + state.getScore(state.getOpponent(state.getCurrentPlayer())) >= 64) return true;
         if(state.getStatus() != GameState2.GameStatus.PLAYING) return true;
         if (deadline != null &&  System.currentTimeMillis() - startTime >= deadline.getTime()) return true;
 
