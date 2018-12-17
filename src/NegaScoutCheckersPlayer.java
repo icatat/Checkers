@@ -26,8 +26,9 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public int staticEvaluator(GameState2 state) {
-        //TODO implement the heuristic to apply
-        // at the moment, returns the score of the player as heuristic
+        if (state == null) return 0;
+        staticEvaluations++;
+
         return state.getScore(originalPlayer);
     }
 

@@ -43,7 +43,9 @@ public class AlphaBetaCheckersPlayer extends CheckersPlayer implements Minimax{
 
     @Override
     public int staticEvaluator(GameState2 state) {
+        if (state == null) return 0;
         staticEvaluations++;
+
         return state.getScore(curOriginalPlayer);
     }
 

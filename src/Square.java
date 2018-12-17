@@ -19,6 +19,11 @@ public class Square {
     }
 
     public void setPlayer(GameState2.Player player) {
+        if (player == GameState2.Player.PLAYER1 && row == 7) {
+            setKing(row, col);
+        } else if (player == GameState2.Player.PLAYER2 && row == 0) {
+            setKing(row, col);
+        }
         this.owner = player;
     }
     public void setKing(int newX, int newY) {

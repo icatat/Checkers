@@ -2,6 +2,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.AbstractSet;
 
 class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener{
 
@@ -12,9 +13,11 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
     private Square fromSquare;
     private Square toSquare;
     private boolean mousePresent;
+    private Color p1 = new Color(255, 100, 100, 255);
+    private Color p2 = new Color(255, 210, 130, 250);
     private CheckersPlayer player1, player2;
     private static Font legendFont = new Font("Arial", Font.BOLD, 12);
-    private static Color toolTipColor = new Color(255, 255, 255, 128);
+    private static Color toolTipColor = new Color(255, 200, 255, 255);
 
     public CheckersPanel(GameState2 initialState, CheckersPlayer player1, CheckersPlayer player2) {
         state = initialState;
@@ -44,13 +47,14 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
         Image image = createImage(getWidth(), getHeight());
         Graphics g = image.getGraphics();
         int row, col;
-        Color gray = new Color(128, 128, 128);
+        Color light = new Color(255, 220, 255, 255);
+        Color dark = new Color(150, 210, 255, 255);
         Color trans_blue = new Color(200, 200, 200, 128);
 
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(gray);
+        g.setColor(light);
         g.fillRect(0, 0, width, height);
 
         /*
@@ -71,18 +75,24 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
             //TODO define the board structure
             for (row = 0; row <= 7; row++) {
                 for (col = 0; col <= 7; col++) {
+
+                    if (row % 2 == 1 && col % 2 == 0 || row % 2 == 0 && col % 2 == 1) {
+                        g.setColor(dark);
+                        g.fillRect(col * square_width + col + 1, row * square_height + row + 1,
+                                square_width, square_height);
+                    }
                     //TODO changed it to getPiece but check what the necessary method is
                     GameState2.Player owner = state.getPieceOwner(row, col);
                     //g.setColor((owner == GameState.Player.PLAYER1 ? Color.WHITE : Color.BLACK));
                     if (owner == GameState2.Player.PLAYER1) {
-                        g.setColor(Color.WHITE);
+                        g.setColor(p1);
                         g.fillOval(col * square_width + col, row * square_height + row,
                                 square_width, square_height);
                         //g.setColor((owner == GameState.Player.PLAYER1 ? Color.BLUE : Color.GREEN));
                         //g.fillOval(col * square_width + col + square_width / 4, row * square_height
                         //+ row + square_height / 4, square_width / 2, square_height / 2);
                     } else if (owner == GameState2.Player.PLAYER2) {
-                        g.setColor(Color.BLACK);
+                        g.setColor(p2);
                         g.fillOval(col * square_width + col, row * square_height + row,
                                 square_width, square_height);
                     }
@@ -93,6 +103,24 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
             /*
              * Now, highlight the valid moves:
              */
+
+            AbstractSet<Move> moves = state.getValidMoves(state.getCurrentPlayer());
+            for (Move m : moves) {
+                Square f = m.from;
+                Square t = m.to;
+
+                Color matchFrom = new Color((f.col) * 10, (f.row ) * 50, 128, 255);
+
+//                g.setColor((state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? Color.BLUE
+//                        : Color.GREEN));
+
+                g.setColor(matchFrom);
+                g.fillRect(t.col * square_width + t.col + 1, t.row * square_height + t.row + 1,
+                        square_width, square_height);
+                g.fillOval(f.col * square_width + f.col + square_width / 4, f.row * square_height
+                        + f.row + square_height / 4, square_width / 2, square_height / 2);
+
+            }
 
 
             if (mousePresent) {
@@ -163,7 +191,6 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
 
         public void run() {
             if (isHumansTurn()) {
-                System.out.println("Hereeeee");
                 HumanCheckersPlayer hop = (HumanCheckersPlayer) (state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? player1
                         : player2);
                 hop.handleUIInput(new Move(fromSquare, toSquare, state.getCurrentPlayer()));

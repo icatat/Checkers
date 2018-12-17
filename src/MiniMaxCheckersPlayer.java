@@ -18,7 +18,9 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
     public int staticEvaluator(GameState2 state) {
         if (state == null) return 0;
         staticEvaluations++;
+
         return state.getScore(curOriginalPlayer);
+
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
         // Minimax algorithm
         for (GameState2 state : successors) {
-            System.out.println("Succ: " + state);
+
             int curEval = minValue(state, depthLimit);
 
             if (curEval > evaluation) {
@@ -65,28 +67,6 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
         return optimalState.getPreviousMove();
 
-
-//        curOriginalPlayer = curState.getCurrentPlayer();
-//
-//        Move moves[] = curState.getValidMoves().toArray(new Move[0]); // the array of all available moves
-//        if (moves.length == 0) return null;
-//        Move bestMove = (Move)moves[0].clone();
-//        int max = -1;
-//        // System.out.println(currentState.toString());
-//
-//        // Minimax
-//        for (Move m : moves) {
-//            GameState2 newState = (GameState2) curState.clone();
-//            int score = minValue(newState.applyMove(m), 1);
-//
-//            // System.out.println("Considering move " + m.toString() + ", " + "score would be " + score);
-//            if (score > max) {
-//                max = score;
-//                bestMove = (Move)m.clone();
-//            }
-//        }
-//         System.out.println("bestMove " + bestMove.from.toString() + bestMove.to.toString());
-//        return bestMove;
     }
 
     /**
@@ -97,7 +77,6 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return the minimum value of the evaluation function
      */
     public int minValue(GameState2 state, int depth) {
-        System.out.println("MIN: " + state);
         if (isTerminalState(state, depth)) {
             return staticEvaluator(state);
         }
@@ -123,16 +102,15 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return the maximum value of the evaluation function
      */
     public int maxValue(GameState2 state, int depth) {
-        System.out.println("OUT: " + state);
         if (isTerminalState(state, depth)) {
             return staticEvaluator(state);
         }
-
 
         int v = Integer.MIN_VALUE;
         AbstractSet<GameState2> successors = state.getSuccessors(true);
         totalSuccessors += successors.size();
         totalParents++;
+        depth++;
         for (GameState2 s : successors) {
             if ( s == null) continue;
             exploredSuccessors++;
@@ -151,7 +129,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return true if it terminal state, else return false;
      */
     private boolean isTerminalState(GameState2 state, int depth) {
-        System.out.println("Terminal? " + state);
+
         if(state.getNumPieces(state.getCurrentPlayer()) == 0) return true;
         if(state.getNumPieces(state.getOpponent(state.getCurrentPlayer())) == 0) return true;
 

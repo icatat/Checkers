@@ -8,7 +8,12 @@ public class Move {
         this.from = from;
         this.to = to;
         this.player = player;
+    }
 
+    public Move(Square from, Square to) {
+        this.from = from;
+        this.to = to;
+        this.player = null;
     }
 
     public GameState2.Player getPlayer() {
