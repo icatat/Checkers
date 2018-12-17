@@ -9,6 +9,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
     private static int totalParents = 0;
+    private static State.Player curOriginalPlayer = null;
 
     public QuiesenceCheckersPlayer (String name) {
         super(name);
@@ -36,15 +37,15 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
         AbstractSet<State> successors = currentState.getSuccessors(true);
 
         State optimalState = null;
-        State.Player currentPlayer = currentState.getCurrentPlayer();
+        curOriginalPlayer = currentState.getCurrentPlayer();
 
-        int evaluation = Integer.MAX_VALUE;
+        int evaluation = Integer.MIN_VALUE;
 
         // Minimax with alpha beta pruning
         for (State state : successors) {
             int curEval = minValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 
-            if (curEval < evaluation) {
+            if (curEval > evaluation) {
                 evaluation = curEval;
                 optimalState = state;
             }
@@ -186,7 +187,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
     @Override
     public int staticEvaluator(State state) {
         staticEvaluations++;
-        return state.getScore(state.getCurrentPlayer());
+        return state.getScore(curOriginalPlayer);
     }
 
     /**
