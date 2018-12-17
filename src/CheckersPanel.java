@@ -109,7 +109,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                 Square f = m.from;
                 Square t = m.to;
 
-                Color matchFrom = new Color((f.col) * 10, (f.row ) * 50, 128, 255);
+                Color matchFrom = new Color((f.col) * 10, (f.row ) * 45, 128, 255);
 
 //                g.setColor((state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? Color.BLUE
 //                        : Color.GREEN));

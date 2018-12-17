@@ -9,6 +9,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
     private static int totalParents = 0;
+    private static GameState2.Player curOriginalPlayer = null;
 
     public QuiesenceCheckersPlayer (String name) {
         super(name);
@@ -36,7 +37,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
         AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
         GameState2 optimalState = null;
-        GameState2.Player currentPlayer = currentState.getCurrentPlayer();
+        GameState2.Player curOriginalPlayer = currentState.getCurrentPlayer();
 
         int evaluation = Integer.MAX_VALUE;
 
@@ -187,7 +188,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
     @Override
     public int staticEvaluator(GameState2 state) {
         staticEvaluations++;
-        return state.getScore(state.getCurrentPlayer());
+        return state.getScore(curOriginalPlayer);
     }
 
     /**
