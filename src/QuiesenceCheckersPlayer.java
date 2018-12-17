@@ -68,6 +68,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     private boolean isTerminalState(GameState2 state, int depth) {
 
+        if (state == null) return true;
         if (depthLimit != -1 && depth >= depthLimit) return true;
 
         if(state.getStatus() != GameState2.GameStatus.PLAYING) return true;
@@ -158,17 +159,40 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      *         return score;
      *     }
      */
+//    private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
+//        int score = staticEvaluator(state);
+//        if (score >= beta || state == null || depth > depthLimit) return score;
+//       // if (alpha < score) alpha = score;
+//        AbstractSet<Move> successors = state.getValidMoves();
+//        depth++;
+//        for (Move p : successors) {
+//            if (p == null) continue;
+//            if (state == null) continue;
+//            GameState2 movedState = state.applyMove(p);
+//            score = -quiesenceSearch(-alpha, -beta, movedState, depth);
+//            state = movedState.getPreviousState();
+//
+//            if (score >= alpha) {
+//                alpha = score;
+//            }
+//
+//            if (score >= beta) break;
+//
+//        }
+//        return score;
+//    }
+
     private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
         int score = staticEvaluator(state);
-        if (score >= beta || state == null) return score;
-        AbstractSet<Move> successors = state.getValidMoves();
+        if (score >= beta || isTerminalState(state, depth)) return score;
+
+        AbstractSet<GameState2> successors = state.getSuccessors();
         depth++;
-        for (Move p : successors) {
+        for (GameState2 p : successors) {
             if (p == null) continue;
             if (state == null) continue;
-            state.applyMove(p);
-            score = -quiesenceSearch(-alpha, -beta, state, depth);
-            state = state.getPreviousState();
+
+            score = -quiesenceSearch(-alpha, -beta, p, depth);
 
             if (score >= alpha) {
                 alpha = score;
@@ -188,6 +212,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     @Override
     public int staticEvaluator(GameState2 state) {
+        if (state == null) return 0;
         staticEvaluations++;
         return state.getScore(curOriginalPlayer);
     }
@@ -233,4 +258,6 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
     public double getEffectiveBranchingFactor() {
         return (double)exploredSuccessors/(double)totalParents;
     }
+
+
 }

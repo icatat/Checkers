@@ -122,6 +122,7 @@ public class GameState2 implements Cloneable {
 
         gs.player = player;
         gs.previous = previous;
+
         if (move != null) {
             gs.move = (Move) move.clone();
         }
@@ -487,6 +488,7 @@ public class GameState2 implements Cloneable {
     public GameState2 applyMove(Move move) throws InvalidMoveException {
         GameState2 original = (GameState2)clone();
         GameState2 newState = applyMoveRecurse(original, move);
+        newState.previous = original;
         newState.switchPlayer();
 
         return newState;
