@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
+import java.util.Timer;
+
 
 public class Checkers {
     private CheckersPlayer player1;
@@ -49,7 +51,11 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
-        while (state.getStatus() == GameState2.GameStatus.PLAYING && (state.getPreviousState() == null || state.getCurrentPlayer() != state.getPreviousState().getCurrentPlayer())) {
+
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
+
+        while (state.getStatus() == GameState2.GameStatus.PLAYING && elapsedTime < 60000) {
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
@@ -122,11 +128,18 @@ public class Checkers {
                     ui.handleStateUpdate(state);
                     validMove = false;
                 }
+                elapsedTime = System.currentTimeMillis() - startTime;
+            } while (!validMove && elapsedTime < 60000);
 
-            } while (!validMove);
+            elapsedTime = System.currentTimeMillis() - startTime;
         }
 
+
         ui.handleStateUpdate(state);
+//        GameState2.GameStatus status = state.getStatus();
+//        if (status == GameState2.GameStatus.PLAYING) {
+//            if (state.)
+//        }
         switch (state.getStatus()) {
             case PLAYER1WON:
                 return player1;
