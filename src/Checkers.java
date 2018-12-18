@@ -55,7 +55,7 @@ public class Checkers {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;
 
-        while (state.getStatus() == GameState2.GameStatus.PLAYING && elapsedTime < 60000) {
+        while (state.getStatus() == GameState2.GameStatus.PLAYING && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000)) {
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
@@ -129,12 +129,12 @@ public class Checkers {
                     validMove = false;
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
-            } while (!validMove && elapsedTime < 60000);
+            } while (!validMove && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000));
 
             elapsedTime = System.currentTimeMillis() - startTime;
         }
 
-
+        System.out.println(elapsedTime);
         ui.handleStateUpdate(state);
 //        GameState2.GameStatus status = state.getStatus();
 //        if (status == GameState2.GameStatus.PLAYING) {
