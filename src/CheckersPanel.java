@@ -100,8 +100,8 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
 
                     if (state.isKing(row, col)) {
                         g.setColor(Color.BLACK);
-                        g.fillOval(col * square_width + col, row * square_height + row,
-                                square_width, square_height);
+                        g.fillOval(col * square_width + col +square_width / 4, row * square_height + row + square_height / 4,
+                                square_width/2, square_height/2);
                     }
                 }
             }

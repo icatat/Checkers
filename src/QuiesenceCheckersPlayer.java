@@ -4,7 +4,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
 
 
     // Based on the experiment result depthLimit is set to 4.
-    private int depthLimit = 4;
+    private int depthLimit = 3;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;

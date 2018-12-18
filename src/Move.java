@@ -22,6 +22,12 @@ public class Move {
     }
 
 
+    public void setKingFrom(boolean val) {
+        this.from.setKing(val);
+    }
+    public void setKingTo(boolean val) {
+        this.to.setKing(val);
+    }
     public void setPlayer(GameState2.Player player) {
         this.player = player;
         from.setPlayer(player);

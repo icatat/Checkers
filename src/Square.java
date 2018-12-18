@@ -20,6 +20,10 @@ public class Square {
 
     public void setPlayer(GameState2.Player player) {
         this.owner = player;
+
+        if (player == GameState2.Player.EMPTY) {
+            setKing(false);
+        }
     }
 
 
