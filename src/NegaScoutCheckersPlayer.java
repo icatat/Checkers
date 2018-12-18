@@ -66,7 +66,7 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
         // Choosing max from NegaScout algorithm
         for (GameState2 state : successors) {
-            int curEval = NegaScout(state, 1, Integer.MIN_VALUE/2, Integer.MAX_VALUE, System.currentTimeMillis(), deadline);
+            int curEval = NegaScout(state, 1, Integer.MIN_VALUE/2, Integer.MAX_VALUE/2, System.currentTimeMillis(), deadline);
 
             if (curEval > evaluation) {
                 evaluation = curEval;
