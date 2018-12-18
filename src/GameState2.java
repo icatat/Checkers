@@ -116,12 +116,18 @@ public class GameState2 implements Cloneable {
     public Object clone() {
         GameState2 gs = new GameState2();
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++)
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                gs.board[i][j].setKing(board[i][j].isKing);
                 gs.board[i][j].setPlayer(board[i][j].getOwner());
 
+            }
+        }
+
         gs.player = player;
-        gs.previous = previous;
+        if (previous != null) {
+            gs.previous = (GameState2) previous.clone();
+        }
         if (move != null) {
             gs.move = (Move) move.clone();
         }
@@ -169,6 +175,7 @@ public class GameState2 implements Cloneable {
 
     Move wouldJumpAndRemove(Move move, Player player, Direction direction) {
 
+
         Square from = move.from;
         Square to = move.to;
 
@@ -178,6 +185,15 @@ public class GameState2 implements Cloneable {
         int toRow = to.row;
         int toCol = to.col;
 
+        if (player == GameState2.Player.PLAYER1 && fromRow == 7 || player == GameState2.Player.PLAYER2 && fromRow == 0) {
+            move.setKingFrom(true);
+            from = move.from;
+        }
+        if (board[fromRow][fromCol].isKing ) {
+            move.setKingFrom(true);
+            from = move.from;
+        }
+
         int colDist = move.colDist();
         int rowDist = move.rowDist();
 
@@ -186,6 +202,8 @@ public class GameState2 implements Cloneable {
                 if(player == Player.PLAYER1 && !from.isKing) {
                     return null;
                 }
+
+
                 if (rowDist == -2 && colDist == -2 && board[toRow + 1][toCol + 1].getOwner() == getOpponent(player)) {
                     return move;
                 }
@@ -338,9 +356,9 @@ public class GameState2 implements Cloneable {
 
         if (validMovesOpponent == 0) totalScore += 1000;
 
-        totalScore += validMovesCurrent - validMovesOpponent;
+        totalScore += (validMovesCurrent - validMovesOpponent) * 100;
         totalScore += (numKingsCurrent - numKingsOpponent) * 10;
-        totalScore += numPiecesCurrent - numPiecesOpponent;
+        totalScore += (numPiecesCurrent - numPiecesOpponent) * 100;
 
 
         if (player == Player.PLAYER1)
@@ -378,6 +396,10 @@ public class GameState2 implements Cloneable {
         return count;
     }
 
+    public boolean isKing(int row, int col) {
+        return board[row][col].isKing;
+    }
+
     public int getNumPieces(Player p) {
         int count = 0;
         for (int i = 0; i < 8; i++) {
@@ -407,20 +429,38 @@ public class GameState2 implements Cloneable {
 
     public GameStatus getStatus() {
 
-        if (getPreviousState() != null && getPreviousState().getCurrentPlayer().equals(getCurrentPlayer())) {
-            if (getCurrentPlayer() == Player.PLAYER1) return GameStatus.PLAYER2WON;
-            return GameStatus.PLAYER1WON;
-        }
-        if (getNumPieces(Player.PLAYER1) == 0 || (getValidMoves(Player.PLAYER1).size() <= 0 && getPreviousState() != null)) {
-            return GameStatus.PLAYER2WON;
-        } else if (getNumPieces(Player.PLAYER2) == 0 || (getValidMoves(Player.PLAYER2).size() <= 0 && getPreviousState() != null)) {
-            return GameStatus.PLAYER1WON;
-        } else if (getValidMoves(Player.PLAYER1).size() <= 0 && getValidMoves(Player.PLAYER2).size() <= 0) {
+        int pieces1 = getNumPieces(Player.PLAYER1);
+        int pieces2 = getNumPieces(Player.PLAYER2);
+
+        int kings1 = getNumKings(Player.PLAYER1);
+        int kings2 = getNumKings(Player.PLAYER2);
+
+        int moves1 = getValidMoves(Player.PLAYER1).size();
+        int moves2 = getValidMoves(Player.PLAYER2).size();
+
+        if(getPreviousState() != null && this.equals(getPreviousState())) {
             return GameStatus.TIE;
         }
-        else {
-            return GameStatus.PLAYING;
+
+        if(getPreviousState() != null && getPreviousState().getPreviousState() != null && this.equals(getPreviousState().getPreviousState())) {
+            return GameStatus.TIE;
         }
+
+        if (pieces1 == pieces2 && pieces1 <= 2) {
+            return GameStatus.TIE;
+        }
+
+
+        if( moves1 + moves2 == 0) return GameStatus.TIE;
+
+        if(pieces1 == 0 || moves1 == 0) return GameStatus.PLAYER2WON;
+
+        if(pieces2 == 0 || moves2 == 0) return GameStatus.PLAYER1WON;
+
+
+
+        return GameStatus.PLAYING;
+
     }
     /**
      * Equivalent to {@link #getSuccessors(boolean) getSuccessors(true)}.
@@ -496,11 +536,15 @@ public class GameState2 implements Cloneable {
             return newState;
         }
 
+        if (Math.abs(move.colDist()) <= 1 || Math.abs(move.rowDist()) <= 1) return newState;
+
         AbstractSet<Move> validMoves = newState.getValidMoves();
 
         for (Move m: validMoves) {
 
             if (m.from.col != move.to.col || m.from.row != move.to.row) continue;
+            if (Math.abs(m.colDist()) <= 1 || Math.abs(m.rowDist()) <= 1) continue;
+
             GameState2 original = (GameState2) newState.clone();
             original.applyMove(m);
         }
@@ -568,6 +612,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[toRow + 1][toCol + 1].setPlayer(Player.EMPTY);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
@@ -576,6 +625,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPLEFT2);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
@@ -583,6 +637,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[toRow + 1][toCol - 1].setPlayer(Player.EMPTY);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
@@ -591,6 +650,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.UPRIGHT2);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
@@ -598,6 +662,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[toRow - 1][toCol + 1].setPlayer(Player.EMPTY);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
@@ -606,6 +675,11 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNLEFT2);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
@@ -613,19 +687,36 @@ public class GameState2 implements Cloneable {
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
-            newState.board[toRow - 1][toCol - 1].setPlayer(Player.EMPTY);;
+            newState.board[toRow - 1][toCol - 1].setPlayer(Player.EMPTY);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
         }
 
         bracket = wouldJumpAndRemove(move, player, Direction.DOWNRIGHT2);
         if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+
             newState.board[toRow][toCol].setPlayer(player);
             newState.board[fromRow][fromCol].setPlayer(Player.EMPTY);
 
+
         }
 
+        if (bracket != null) {
+            if (bracket.from.isKing) {
+                newState.board[toRow][toCol].setKing(true);
+                newState.board[fromRow][fromCol].setKing(false);
+            }
+        }
 
         return newState;
     }

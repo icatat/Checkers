@@ -81,6 +81,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                         g.fillRect(col * square_width + col + 1, row * square_height + row + 1,
                                 square_width, square_height);
                     }
+
                     //TODO changed it to getPiece but check what the necessary method is
                     GameState2.Player owner = state.getPieceOwner(row, col);
                     //g.setColor((owner == GameState.Player.PLAYER1 ? Color.WHITE : Color.BLACK));
@@ -96,6 +97,12 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                         g.fillOval(col * square_width + col, row * square_height + row,
                                 square_width, square_height);
                     }
+
+                    if (state.isKing(row, col)) {
+                        g.setColor(Color.BLACK);
+                        g.fillOval(col * square_width + col +square_width / 4, row * square_height + row + square_height / 4,
+                                square_width/2, square_height/2);
+                    }
                 }
             }
         }
@@ -109,7 +116,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
                 Square f = m.from;
                 Square t = m.to;
 
-                Color matchFrom = new Color((f.col) * 10, (f.row ) * 50, 128, 255);
+                Color matchFrom = new Color((f.col) * 10, (f.row ) * 45, 128, 255);
 
 //                g.setColor((state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? Color.BLUE
 //                        : Color.GREEN));
@@ -191,8 +198,8 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
 
         public void run() {
             if (isHumansTurn()) {
-                HumanCheckersPlayer hop = (HumanCheckersPlayer) (state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? player1
-                        : player2);
+                HumanCheckersPlayer hop = (HumanCheckersPlayer)
+                        (state.getCurrentPlayer() == GameState2.Player.PLAYER1 ? player1 : player2);
                 hop.handleUIInput(new Move(fromSquare, toSquare, state.getCurrentPlayer()));
 
             }
@@ -229,7 +236,7 @@ class CheckersPanel extends JPanel implements MouseListener, MouseMotionListener
         int y = e.getY();
         int height = getHeight();
         int width = getWidth();
-        int square_width = (width - 7) / 8;
+        int square_width = (width - 2) / 8;
         int square_height = (height - 7) / 8;
 
         return new Square(y / (square_height + 1), x / (square_width + 1), state.getCurrentPlayer());

@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/osgi/src/main/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/osgi/src/test/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/contrib/poi-ruby/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/examples/src" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/excelant/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/excelant/testcases" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/integrationtest" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/ooxml/java" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/ooxml/testcases" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/scratchpad/src" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/scratchpad/testcases" />
+      <root url="file://$USER_HOME$/Downloads/poi-4.0.1/src/testcases" />
+    </SOURCES>
+  </library>
+</component>

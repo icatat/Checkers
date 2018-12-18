@@ -1,10 +1,17 @@
 
 // consider 8X8 checkers, 10X10 and 12X12
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
+import  org.apache.poi.hssf.usermodel.HSSFSheet;
+import  org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import  org.apache.poi.hssf.usermodel.HSSFRow;
+import java.util.Timer;
 
 public class Checkers {
     private CheckersPlayer player1;
@@ -49,8 +56,11 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
-        System.out.println(state);
-        while (state.getStatus() == GameState2.GameStatus.PLAYING && (state.getPreviousState() == null || state.getCurrentPlayer() != state.getPreviousState().getCurrentPlayer())) {
+
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
+
+        while (state.getStatus() == GameState2.GameStatus.PLAYING && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000)) {
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
@@ -115,9 +125,7 @@ public class Checkers {
                 }
                 try {
                     GameState2 original = (GameState2) state.clone();
-                    System.out.println("Orginal" + original);
                     state = state.applyMove(move);
-                    System.out.println(state);
 
                 } catch (RuntimeException rte) {
                     // This can be changed to InvalidMoveException if we want to make a separate class for that
@@ -125,11 +133,18 @@ public class Checkers {
                     ui.handleStateUpdate(state);
                     validMove = false;
                 }
+                elapsedTime = System.currentTimeMillis() - startTime;
+            } while (!validMove && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000));
 
-            } while (!validMove);
+            elapsedTime = System.currentTimeMillis() - startTime;
         }
 
+        System.out.println(elapsedTime);
         ui.handleStateUpdate(state);
+//        GameState2.GameStatus status = state.getStatus();
+//        if (status == GameState2.GameStatus.PLAYING) {
+//            if (state.)
+//        }
         switch (state.getStatus()) {
             case PLAYER1WON:
                 return player1;
@@ -231,174 +246,94 @@ public class Checkers {
      * To run Checkers with GUI: java checker <Player1> <Player2> <timeLimit>
      * @param args takes in player1, player 2 and timeLimit
      */
-    public static void main(String[] args) {
-        UserInterface ui = null;
-        String[] sarg = new String[4];
-        int sargs = 0;
-        boolean printUse = false;
-        long seed = 0;
-        boolean seedSet = false;
-        int turnDuration = -1;
+    public static void main(String[] args) throws IOException {
+        if (args.length > 3 || args.length < 2) {
+            System.err.println("Warning: not correct arguments");
+        }
 
-        for (int i = 0; i < args.length; i++) {
-            if (!args[i].startsWith("-")) {
-                /**
-                 * This is the class name of an agent
-                 */
-                if (sargs < 4)
-                    sarg[sargs++] = args[i];
-                else {
-                    System.err.println("Warning: unexpected argument \"" + args[i] + "\"!");
-                    printUse = true;
+        String filename = "/Users/Aditi/Desktop/Test1.xls" ;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("FirstSheet");
+        HSSFRow rowhead = sheet.createRow((short)0);
+        rowhead.createCell(0).setCellValue("Nodes");
+        rowhead.createCell(1).setCellValue("Evaluation");
+        rowhead.createCell(2).setCellValue("Average Branching");
+        rowhead.createCell(3).setCellValue("Effective Branching");
+        rowhead.createCell(4).setCellValue("Nodes");
+        rowhead.createCell(5).setCellValue("Evaluation");
+        rowhead.createCell(6).setCellValue("Average Branching");
+        rowhead.createCell(7).setCellValue("Effective Branching");
+        for(int j=0; j<10; j++) {
+
+            UserInterface ui = new GraphicalUserInterface();
+
+            int turnDuration = -1;
+            CheckersPlayer[] players = new CheckersPlayer[2];
+
+            for (int i = 0; i < args.length; i++) {
+                if (i == 0) {
+                    try {
+                        players[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
+                    } catch (Exception e1) {
+                        System.err.println("Error Instantiating Agent for Player 1");
+                    }
+                } else if (i == 1) {
+                    try {
+                        players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
+                    } catch (Exception e1) {
+                        System.err.println(e1.getMessage());
+                        //System.err.println("Error Instantiating Agent for Player 2");
+                    }
+                } else {
+                    turnDuration = Integer.parseInt(args[2]);
                 }
             }
-            else if (args[i].equals("-s")) {
-                /**
-                 * Set the seed to the random number generator
-                 */
-                if (i == args.length - 1) {
-                    System.err
-                            .println("Error: -s requires an argument (the number with which to seed the random number generator)");
-                    printUse = true;
+
+            ui.setPlayers(players[0], players[1]);
+
+            Checkers checkers = new Checkers(players[0], players[1], ui);
+            checkers.turnDuration = turnDuration;
+
+            CheckersPlayer winner = checkers.play();
+
+            // To print winner in the ui
+            if (winner == null) {
+                checkers.log("It was a tie!");
+            } else {
+                checkers.log("The winner was " + winner + "!");
+            }
+
+            HSSFRow row = sheet.createRow((short)j);
+            for (int k=0; k<players.length; k++) {
+                if (players[k] instanceof Minimax) {
+                    Minimax mm = (Minimax) players[k];
+                    checkers.log("");
+                    checkers.log("Stats for " + players[k].getName());
+                    checkers.log("          Nodes: " + mm.getNodesGenerated());
+                    checkers.log("    Evaluations: " + mm.getStaticEvaluations());
+                    checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
+                    checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
+
+
+                    if(k==0) {
+                        row.createCell(0).setCellValue(mm.getNodesGenerated());
+                        row.createCell(1).setCellValue(mm.getStaticEvaluations());
+                        row.createCell(2).setCellValue(mm.getAveBranchingFactor());
+                        row.createCell(3).setCellValue(mm.getEffectiveBranchingFactor());
+                    }else{
+                        row.createCell(4).setCellValue(mm.getNodesGenerated());
+                        row.createCell(5).setCellValue(mm.getStaticEvaluations());
+                        row.createCell(6).setCellValue(mm.getAveBranchingFactor());
+                        row.createCell(7).setCellValue(mm.getEffectiveBranchingFactor());
+                    }
+
                 }
-                else {
-                    seed = Long.parseLong(args[++i]);
-                    seedSet = true;
-                }
             }
-            else if (args[i].equals("-d")) {
-                /**
-                 * Set the maximum turn duration
-                 */
-                if (i == args.length - 1) {
-                    System.err
-                            .println("Error: -d requires an argument (the maximum turn duration in seconds)");
-                    printUse = true;
-                }
-                else {
-                    turnDuration = Integer.parseInt(args[++i]);
-                }
-            }
-            else {
-                System.err.println("Warning: unexpected argument \"" + args[i] + "\"!");
-                printUse = true;
-            }
+
         }
 
-        if (ui == null)
-            ui = new GraphicalUserInterface();
-
-        CheckersPlayer players[];
-
-        if (sargs < 2) {
-            players = ui.getPlayers();
-        }
-        else {
-            players = new CheckersPlayer[2];
-            String player1class = sarg[0];
-            String player1name = (sargs > 2 ? sarg[1] : getSimplifiedClassName(player1class));
-            if (player1name.equals(""))
-                player1name = "Player 1";
-            String player2class = (sargs > 2 ? sarg[2] : sarg[1]);
-            String player2name = (sargs > 3 ? sarg[3] : getSimplifiedClassName(player2class));
-            if (player2name.equals(player1name))
-                player2name = player2name + "2";
-            else if (player2name.equals(""))
-                player2name = "Player 2";
-            try {
-                players[0] = instantiatePlayer(player1class, player1name);
-            }
-            catch (NoSuchMethodException nsme1) {
-                System.err
-                        .println("Error Instantiating Agent: Make sure the agent class for player 1 ("
-                                + player1class
-                                + ")\nhas a constructor that accepts a single string as an argument!");
-                printUse = true;
-            }
-            catch (Exception e1) {
-                System.err.println("Error Instantiating Agent: " + e1.toString());
-                printUse = true;
-            }
-            try {
-                players[1] = instantiatePlayer(player2class, player2name);
-            }
-            catch (NoSuchMethodException nsme2) {
-                System.err
-                        .println("Error Instantiating Agent: Make sure the agent class for player 2 ("
-                                + player2class
-                                + ")\nhas a constructor that accepts a single string as an argument!");
-                printUse = true;
-            }
-            catch (Exception e2) {
-                System.err.println("Error Instantiating Agent: " + e2.toString());
-                printUse = true;
-            }
-        }
-
-        if (printUse) {
-            printUsage();
-            System.exit(1);
-        }
-
-        ui.setPlayers(players[0], players[1]);
-        if (ui instanceof Logger) {
-            players[0].setLogger((Logger) ui);
-            players[1].setLogger((Logger) ui);
-        }
-        Checkers checkers = new Checkers(players[0], players[1], ui);
-        checkers.turnDuration = turnDuration;
-        if (ui instanceof Logger)
-            ((Logger) ui).log(getVersionInfo(), null);
-        else
-            System.out.println(getVersionInfo());
-        CheckersPlayer winner = checkers.play();
-        if (winner == null)
-            checkers.log("It was a tie!");
-        else
-            checkers.log("The winner was " + winner + "!");
-
-        for (CheckersPlayer op : players) {
-            if (op instanceof Minimax) {
-                Minimax mm = (Minimax) op;
-                checkers.log(op.getName() + " Stats:");
-                checkers.log("          Nodes: " + mm.getNodesGenerated());
-                checkers.log("    Evaluations: " + mm.getStaticEvaluations());
-                checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
-                checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
-            }
-        }
-    }
-
-    static String getVersionInfo() {
-        return "Othello Version " + VERSION + " " + REV_DATE + "\n"
-                + "Copyright 2006--2007, Evan A. Sultanik" + "\n" + "http://www.sultanik.com/"
-                + "\n" + "\n";
-    }
-
-    /**
-     * Prints command line usage information.
-     */
-    public static void printUsage() {
-        System.err.println(getVersionInfo());
-        System.err
-                .println("Usage: othello [options] [player1class [player1name] player2class [player2name]]");
-        System.err.println();
-        System.err.println("  player1class      Class name of the agent for player1");
-        System.err
-                .println("                    (i.e. \"org.drexel.edu.cs.ai.othello.RandomOthelloPlayer\")");
-        System.err.println("  player1name       The name for player1 (i.e. \"Evan's Agent\")");
-        System.err.println("  player2class      Class name of the agent for player2");
-        System.err.println("  player2name       The name for player2");
-        System.err.println();
-        System.err.println("OPTIONS:");
-        System.err.println("         -s  number Seed for the simulator's random number generator.");
-        System.err.println("                    If omitted, time since the epoch is used.");
-        System.err.println("         -nw        Run in console mode (a GUI is used by default)");
-        System.err
-                .println("         -d  number Sets the amount of time (in seconds) an agent has to make");
-        System.err.println("                    its decision each turn (i.e. the deadline).");
-        System.err
-                .println("                    A value <= 0 will result in an infinite deadline (this is");
-        System.err.println("                    the default).");
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        workbook.write(fileOut);
+        fileOut.close();
     }
 }

@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
 
-    private int depthLimit = -1;
+    private int depthLimit = 3;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;

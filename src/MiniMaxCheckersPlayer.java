@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
 
-    private int depthLimit = 4;
+    private int depthLimit = 3;
     private static int staticEvaluations = 0;
     private static int totalSuccessors = 0;
     private static int exploredSuccessors = 0;
@@ -55,7 +55,7 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
         // Minimax algorithm
         for (GameState2 state : successors) {
 
-            int curEval = minValue(state, depthLimit);
+            int curEval = minValue(state, 1);
 
             if (curEval > evaluation) {
                 evaluation = curEval;
@@ -118,7 +118,6 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
         }
 
         return v;
-
     }
 
     /**
@@ -129,11 +128,10 @@ public class MiniMaxCheckersPlayer extends CheckersPlayer implements Minimax{
      * @return true if it terminal state, else return false;
      */
     private boolean isTerminalState(GameState2 state, int depth) {
-
         if(state.getNumPieces(state.getCurrentPlayer()) == 0) return true;
         if(state.getNumPieces(state.getOpponent(state.getCurrentPlayer())) == 0) return true;
 
-        if (state == null || depthLimit != -1 && depth >= depthLimit) {
+        if (state == null || (depthLimit != -1 && depth >= depthLimit)) {
             return true;
         }
 
