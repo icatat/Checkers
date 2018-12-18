@@ -45,7 +45,7 @@ public class GraphicalUserInterface extends JFrame implements UserInterface, Log
         player1 = null;
         player2 = null;
         panel = null;
-        setPreferredSize(new Dimension(800, 480));
+        setPreferredSize(new Dimension(800, 510));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
         logQueue = new LinkedList<MessageSourcePair>();

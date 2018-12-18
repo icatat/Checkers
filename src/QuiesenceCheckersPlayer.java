@@ -1,4 +1,3 @@
-import javax.swing.plaf.nimbus.State;
 import java.util.Date;
 import java.util.AbstractSet;
 public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
@@ -159,29 +158,6 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      *         return score;
      *     }
      */
-//    private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
-//        int score = staticEvaluator(state);
-//        if (score >= beta || state == null || depth > depthLimit) return score;
-//       // if (alpha < score) alpha = score;
-//        AbstractSet<Move> successors = state.getValidMoves();
-//        depth++;
-//        for (Move p : successors) {
-//            if (p == null) continue;
-//            if (state == null) continue;
-//            GameState2 movedState = state.applyMove(p);
-//            score = -quiesenceSearch(-alpha, -beta, movedState, depth);
-//            state = movedState.getPreviousState();
-//
-//            if (score >= alpha) {
-//                alpha = score;
-//            }
-//
-//            if (score >= beta) break;
-//
-//        }
-//        return score;
-//    }
-
     private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
         int score = staticEvaluator(state);
         if (score >= beta || isTerminalState(state, depth)) return score;
