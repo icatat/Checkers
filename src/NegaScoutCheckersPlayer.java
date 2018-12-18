@@ -61,11 +61,11 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
         // substitute the above line with below
         originalPlayer = currentState.getCurrentPlayer();
 
-        int evaluation = Integer.MIN_VALUE;
+        int evaluation = Integer.MIN_VALUE/2;
 
         // Choosing max from NegaScout algorithm
         for (GameState2 state : successors) {
-            int curEval = NegaScout(state, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, System.currentTimeMillis(), deadline);
+            int curEval = NegaScout(state, 1, Integer.MIN_VALUE/2, Integer.MAX_VALUE, System.currentTimeMillis(), deadline);
 
             if (curEval > evaluation) {
                 evaluation = curEval;
@@ -89,10 +89,10 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     public int NegaScout (GameState2 state, int depth, int alpha, int beta, long startTime, Date deadline) {
 
-        if (depth == 0 || isTerminalState(state, depth, startTime, deadline)) {
+    	if (depth > depthLimit || isTerminalState(state, depth, startTime, deadline)) {
             return staticEvaluator(state);
         }
-        int score = Integer.MIN_VALUE;
+        int score = alpha;
         int n = beta;
         AbstractSet<GameState2>successors = state.getSuccessors(true);
         totalSuccessors += successors.size();
@@ -100,12 +100,12 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
         for (GameState2 succ : successors) {
             if (succ == null) continue;
             exploredSuccessors++;
-            int cur = -NegaScout(succ, depth - 1, -n, -alpha, startTime, deadline);
+            int cur = -NegaScout(succ, depth + 1, -n, -alpha, startTime, deadline);
             if (cur > score) {
                 if (n == beta || depth <= 2) {
                     score = cur;
                 } else {
-                    score = -NegaScout(succ, depth - 1, -beta, -cur, startTime, deadline);
+                    score = -NegaScout(succ, depth + 1, -beta, -cur, startTime, deadline);
                 }
             }
 
