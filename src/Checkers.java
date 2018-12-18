@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import  org.apache.poi.hssf.usermodel.HSSFSheet;
 import  org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import  org.apache.poi.hssf.usermodel.HSSFRow;
+import java.util.Timer;
 
 public class Checkers {
     private CheckersPlayer player1;
@@ -55,7 +56,11 @@ public class Checkers {
     }
 
     public CheckersPlayer play() {
-        while (state.getStatus() == GameState2.GameStatus.PLAYING && (state.getPreviousState() == null || state.getCurrentPlayer() != state.getPreviousState().getCurrentPlayer())) {
+
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
+
+        while (state.getStatus() == GameState2.GameStatus.PLAYING && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000)) {
             if (state.getPreviousState() != null
                     && state.getPreviousState().getCurrentPlayer() == state.getCurrentPlayer())
 
@@ -128,11 +133,18 @@ public class Checkers {
                     ui.handleStateUpdate(state);
                     validMove = false;
                 }
+                elapsedTime = System.currentTimeMillis() - startTime;
+            } while (!validMove && (!(player1 instanceof HumanCheckersPlayer || player2 instanceof HumanCheckersPlayer) && elapsedTime < 60000));
 
-            } while (!validMove);
+            elapsedTime = System.currentTimeMillis() - startTime;
         }
 
+        System.out.println(elapsedTime);
         ui.handleStateUpdate(state);
+//        GameState2.GameStatus status = state.getStatus();
+//        if (status == GameState2.GameStatus.PLAYING) {
+//            if (state.)
+//        }
         switch (state.getStatus()) {
             case PLAYER1WON:
                 return player1;

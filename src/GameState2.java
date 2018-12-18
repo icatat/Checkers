@@ -450,12 +450,6 @@ public class GameState2 implements Cloneable {
             return GameStatus.TIE;
         }
 
-//        if (pieces1 == kings1 && pieces2 == kings2) return GameStatus.TIE;
-
-//        if (kings1 == pieces1 && ) return GameStatus.PLAYER1WON;
-//
-//        if (kings2 == pieces2) return GameStatus.PLAYER2WON;
-
 
         if( moves1 + moves2 == 0) return GameStatus.TIE;
 
