@@ -61,6 +61,7 @@ public class NegaScoutCheckersPlayer extends CheckersPlayer implements Minimax{
         // substitute the above line with below
         originalPlayer = currentState.getCurrentPlayer();
 
+        // fixes the 2's complement reversal bug
         int evaluation = Integer.MIN_VALUE/2;
 
         // Choosing max from NegaScout algorithm
