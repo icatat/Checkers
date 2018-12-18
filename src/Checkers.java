@@ -1,10 +1,16 @@
 
 // consider 8X8 checkers, 10X10 and 12X12
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
+import  org.apache.poi.hssf.usermodel.HSSFSheet;
+import  org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import  org.apache.poi.hssf.usermodel.HSSFRow;
 
 public class Checkers {
     private CheckersPlayer player1;
@@ -228,60 +234,94 @@ public class Checkers {
      * To run Checkers with GUI: java checker <Player1> <Player2> <timeLimit>
      * @param args takes in player1, player 2 and timeLimit
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length > 3 || args.length < 2) {
             System.err.println("Warning: not correct arguments");
         }
 
-        UserInterface ui = new GraphicalUserInterface();
-        ;
+        String filename = "/Users/Aditi/Desktop/Test1.xls" ;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("FirstSheet");
+        HSSFRow rowhead = sheet.createRow((short)0);
+        rowhead.createCell(0).setCellValue("Nodes");
+        rowhead.createCell(1).setCellValue("Evaluation");
+        rowhead.createCell(2).setCellValue("Average Branching");
+        rowhead.createCell(3).setCellValue("Effective Branching");
+        rowhead.createCell(4).setCellValue("Nodes");
+        rowhead.createCell(5).setCellValue("Evaluation");
+        rowhead.createCell(6).setCellValue("Average Branching");
+        rowhead.createCell(7).setCellValue("Effective Branching");
+        for(int j=0; j<10; j++) {
 
-        int turnDuration = -1;
-        CheckersPlayer[] players = new CheckersPlayer[2];
+            UserInterface ui = new GraphicalUserInterface();
 
-        for (int i = 0; i < args.length; i++) {
-            if (i == 0) {
-                try {
-                    players[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
-                } catch (Exception e1) {
-                    System.err.println("Error Instantiating Agent for Player 1");
+            int turnDuration = -1;
+            CheckersPlayer[] players = new CheckersPlayer[2];
+
+            for (int i = 0; i < args.length; i++) {
+                if (i == 0) {
+                    try {
+                        players[0] = instantiatePlayer(args[0], "Player 1: " + args[0]);
+                    } catch (Exception e1) {
+                        System.err.println("Error Instantiating Agent for Player 1");
+                    }
+                } else if (i == 1) {
+                    try {
+                        players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
+                    } catch (Exception e1) {
+                        System.err.println(e1.getMessage());
+                        //System.err.println("Error Instantiating Agent for Player 2");
+                    }
+                } else {
+                    turnDuration = Integer.parseInt(args[2]);
                 }
-            } else if (i == 1) {
-                try {
-                    players[1] = instantiatePlayer(args[1], "Player 2: " + args[1]);
-                } catch (Exception e1) {
-                    System.err.println(e1.getMessage());
-                    //System.err.println("Error Instantiating Agent for Player 2");
-                }
+            }
+
+            ui.setPlayers(players[0], players[1]);
+
+            Checkers checkers = new Checkers(players[0], players[1], ui);
+            checkers.turnDuration = turnDuration;
+
+            CheckersPlayer winner = checkers.play();
+
+            // To print winner in the ui
+            if (winner == null) {
+                checkers.log("It was a tie!");
             } else {
-                turnDuration = Integer.parseInt(args[2]);
+                checkers.log("The winner was " + winner + "!");
             }
-        }
 
-        ui.setPlayers(players[0], players[1]);
+            HSSFRow row = sheet.createRow((short)j);
+            for (int k=0; k<players.length; k++) {
+                if (players[k] instanceof Minimax) {
+                    Minimax mm = (Minimax) players[k];
+                    checkers.log("");
+                    checkers.log("Stats for " + players[k].getName());
+                    checkers.log("          Nodes: " + mm.getNodesGenerated());
+                    checkers.log("    Evaluations: " + mm.getStaticEvaluations());
+                    checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
+                    checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
 
-        Checkers checkers = new Checkers(players[0], players[1], ui);
-        checkers.turnDuration = turnDuration;
 
-        CheckersPlayer winner = checkers.play();
+                    if(k==0) {
+                        row.createCell(0).setCellValue(mm.getNodesGenerated());
+                        row.createCell(1).setCellValue(mm.getStaticEvaluations());
+                        row.createCell(2).setCellValue(mm.getAveBranchingFactor());
+                        row.createCell(3).setCellValue(mm.getEffectiveBranchingFactor());
+                    }else{
+                        row.createCell(4).setCellValue(mm.getNodesGenerated());
+                        row.createCell(5).setCellValue(mm.getStaticEvaluations());
+                        row.createCell(6).setCellValue(mm.getAveBranchingFactor());
+                        row.createCell(7).setCellValue(mm.getEffectiveBranchingFactor());
+                    }
 
-        // To print winner in the ui
-        if (winner == null) {
-            checkers.log("It was a tie!");
-        } else {
-            checkers.log("The winner was " + winner + "!");
-        }
-
-        for (CheckersPlayer op : players) {
-            if (op instanceof Minimax) {
-                Minimax mm = (Minimax) op;
-                checkers.log("");
-                checkers.log("Stats for " + op.getName());
-                checkers.log("          Nodes: " + mm.getNodesGenerated());
-                checkers.log("    Evaluations: " + mm.getStaticEvaluations());
-                checkers.log("  Ave Branching: " + mm.getAveBranchingFactor());
-                checkers.log("  Eff Branching: " + mm.getEffectiveBranchingFactor());
+                }
             }
+
         }
+
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        workbook.write(fileOut);
+        fileOut.close();
     }
 }
