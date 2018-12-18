@@ -362,11 +362,11 @@ public class GameState2 implements Cloneable {
 
 
         if (player == Player.PLAYER1)
-            p1score = -totalScore;
+            p1score = totalScore;
         else if (player == Player.PLAYER2)
-            p2score = -totalScore;
+            p2score = totalScore;
 
-        return -totalScore;
+        return totalScore;
     }
 
     /**

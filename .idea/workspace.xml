@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1bb9f5d6-9db4-4947-842b-8087055f01d3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Checkers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Checkers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CheckersPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CheckersPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameState.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameState2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameState2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Move.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Square.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Square.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,7 +19,7 @@
       <file leaf-file-name="AlphaBetaCheckersPlayer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-640">
+            <state relative-caret-position="-201">
               <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -37,12 +31,10 @@
       <file leaf-file-name="QuiesenceCheckersPlayer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
+            <state relative-caret-position="570">
+              <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#558#559#0" expanded="true" />
-                <element signature="e#585#586#0" expanded="true" />
                 <element signature="e#6884#6885#0" expanded="true" />
                 <element signature="e#6925#6926#0" expanded="true" />
                 <element signature="e#7106#7107#0" expanded="true" />
@@ -59,8 +51,8 @@
       <file leaf-file-name="MiniMaxCheckersPlayer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1074">
-              <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="62" />
+            <state relative-caret-position="187">
+              <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#453#454#0" expanded="true" />
@@ -107,20 +99,16 @@
               <caret line="103" column="63" selection-start-line="103" selection-start-column="63" selection-end-line="103" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#6537#6538#0" expanded="true" />
-                <element signature="e#6573#6574#0" expanded="true" />
-                <element signature="e#6619#6620#0" expanded="true" />
-                <element signature="e#6670#6671#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Checkers.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Checkers.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Checkers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-41">
-              <caret line="118" selection-start-line="118" selection-end-line="118" />
+            <state relative-caret-position="235">
+              <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -128,11 +116,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameState2.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameState2.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GameState2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="444" column="139" selection-start-line="444" selection-start-column="139" selection-end-line="444" selection-end-column="139" />
+            <state relative-caret-position="350">
+              <caret line="360" column="60" selection-start-line="360" selection-start-column="60" selection-end-line="360" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3995#3996#0" expanded="true" />
@@ -238,14 +226,14 @@
         <option value="$PROJECT_DIR$/src/GameState.java" />
         <option value="$PROJECT_DIR$/src/HumanCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/NegaScoutCheckersPlayer.java" />
-        <option value="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" />
-        <option value="$PROJECT_DIR$/src/Checkers.java" />
         <option value="$PROJECT_DIR$/src/CheckersPanel.java" />
         <option value="$PROJECT_DIR$/src/Move.java" />
         <option value="$PROJECT_DIR$/src/Square.java" />
         <option value="$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java" />
+        <option value="$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java" />
         <option value="$PROJECT_DIR$/src/GameState2.java" />
+        <option value="$PROJECT_DIR$/src/Checkers.java" />
       </list>
     </option>
   </component>
@@ -487,8 +475,6 @@
           <caret line="2" column="27" lean-forward="true" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#558#559#0" expanded="true" />
-            <element signature="e#585#586#0" expanded="true" />
             <element signature="e#6884#6885#0" expanded="true" />
             <element signature="e#6925#6926#0" expanded="true" />
             <element signature="e#7106#7107#0" expanded="true" />
@@ -782,20 +768,6 @@
           <caret line="103" column="63" selection-start-line="103" selection-start-column="63" selection-end-line="103" selection-end-column="63" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#6537#6538#0" expanded="true" />
-            <element signature="e#6573#6574#0" expanded="true" />
-            <element signature="e#6619#6620#0" expanded="true" />
-            <element signature="e#6670#6671#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Checkers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-41">
-          <caret line="118" selection-start-line="118" selection-end-line="118" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -809,26 +781,6 @@
             <element signature="e#521#522#0" expanded="true" />
             <element signature="e#567#568#0" expanded="true" />
             <element signature="e#605#606#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1074">
-          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="62" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#453#454#0" expanded="true" />
-            <element signature="e#480#481#0" expanded="true" />
-            <element signature="e#719#720#0" expanded="true" />
-            <element signature="e#760#761#0" expanded="true" />
-            <element signature="e#815#816#0" expanded="true" />
-            <element signature="e#855#856#0" expanded="true" />
-            <element signature="e#914#915#0" expanded="true" />
-            <element signature="e#981#982#0" expanded="true" />
-            <element signature="e#1046#1047#0" expanded="true" />
-            <element signature="e#1116#1117#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -852,12 +804,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/QuiesenceCheckersPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
+        <state relative-caret-position="570">
+          <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#558#559#0" expanded="true" />
-            <element signature="e#585#586#0" expanded="true" />
             <element signature="e#6884#6885#0" expanded="true" />
             <element signature="e#6925#6926#0" expanded="true" />
             <element signature="e#7106#7107#0" expanded="true" />
@@ -870,9 +820,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/MiniMaxCheckersPlayer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#453#454#0" expanded="true" />
+            <element signature="e#480#481#0" expanded="true" />
+            <element signature="e#719#720#0" expanded="true" />
+            <element signature="e#760#761#0" expanded="true" />
+            <element signature="e#815#816#0" expanded="true" />
+            <element signature="e#855#856#0" expanded="true" />
+            <element signature="e#914#915#0" expanded="true" />
+            <element signature="e#981#982#0" expanded="true" />
+            <element signature="e#1046#1047#0" expanded="true" />
+            <element signature="e#1116#1117#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AlphaBetaCheckersPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-640">
+        <state relative-caret-position="-201">
           <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -882,8 +852,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GameState2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="444" column="139" selection-start-line="444" selection-start-column="139" selection-end-line="444" selection-end-column="139" />
+        <state relative-caret-position="350">
+          <caret line="360" column="60" selection-start-line="360" selection-start-column="60" selection-end-line="360" selection-end-column="60" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3995#3996#0" expanded="true" />
@@ -906,6 +876,16 @@
             <element signature="e#27507#27508#0" expanded="true" />
             <element signature="e#27870#27871#0" expanded="true" />
             <element signature="e#27899#27900#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Checkers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
