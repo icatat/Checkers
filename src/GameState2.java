@@ -121,8 +121,9 @@ public class GameState2 implements Cloneable {
                 gs.board[i][j].setPlayer(board[i][j].getOwner());
 
         gs.player = player;
-        gs.previous = previous;
-
+        if (previous != null) {
+            gs.previous = (GameState2) previous.clone();
+        }
         if (move != null) {
             gs.move = (Move) move.clone();
         }
@@ -388,6 +389,9 @@ public class GameState2 implements Cloneable {
         return count;
     }
 
+    public boolean isKing(int row, int col) {
+        return board[row][col].isKing;
+    }
     public int getNumPieces(Player p) {
         int count = 0;
         for (int i = 0; i < 8; i++) {
@@ -417,6 +421,9 @@ public class GameState2 implements Cloneable {
 
     public GameStatus getStatus() {
 
+        if (getNumPieces(getCurrentPlayer()) == getNumKings(getCurrentPlayer()) && getNumKings(getOpponent(getCurrentPlayer())) == getNumPieces(getOpponent(getCurrentPlayer()))) {
+            return GameStatus.TIE;
+        }
         if (getPreviousState() != null && getPreviousState().getCurrentPlayer().equals(getCurrentPlayer())) {
             if (getCurrentPlayer() == Player.PLAYER1) return GameStatus.PLAYER2WON;
             return GameStatus.PLAYER1WON;
@@ -644,6 +651,7 @@ public class GameState2 implements Cloneable {
         if (bracket != null) {
 
             if (bracket.from.isKing) {
+
                 newState.board[toRow][toCol].setKing(true);
             }
             newState.board[fromRow][fromCol].setKing(false);

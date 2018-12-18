@@ -115,9 +115,8 @@ public class Checkers {
                 }
                 try {
                     GameState2 original = (GameState2) state.clone();
-                    System.out.println("Orginal" + original);
                     state = state.applyMove(move);
-                    System.out.println(state);
+                    System.out.println(state.getNumKings(state.getCurrentPlayer()));
 
                 } catch (RuntimeException rte) {
                     // This can be changed to InvalidMoveException if we want to make a separate class for that
