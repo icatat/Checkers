@@ -442,7 +442,8 @@ public class GameState2 implements Cloneable {
             return GameStatus.TIE;
         }
 
-        if(getPreviousState() != null && getPreviousState().getPreviousState() != null && this.equals(getPreviousState().getPreviousState())) {
+        if(getPreviousState() != null && getPreviousState().getPreviousState() != null
+                && this.equals(getPreviousState().getPreviousState())) {
             return GameStatus.TIE;
         }
 
@@ -452,17 +453,11 @@ public class GameState2 implements Cloneable {
 
         if (pieces1 == kings1 && pieces2 == kings2) return GameStatus.TIE;
 
-//        if (kings1 == pieces1) return GameStatus.PLAYER1WON;
-//
-//        if (kings2 == pieces2) return GameStatus.PLAYER2WON;
-
-
         if( moves1 + moves2 == 0) return GameStatus.TIE;
 
         if(pieces1 == 0 || moves1 == 0) return GameStatus.PLAYER2WON;
 
         if(pieces2 == 0 || moves2 == 0) return GameStatus.PLAYER1WON;
-
 
 
         return GameStatus.PLAYING;
