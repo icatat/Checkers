@@ -1,5 +1,9 @@
 import java.util.Date;
 import java.util.AbstractSet;
+
+/**
+ * Class that creates a player using the Quiescence strategy
+ */
 public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
 
 
@@ -21,7 +25,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * @param name the name of the player
      * @param depthLimit maximum depth that can be explored
      */
-    public QuiesenceCheckersPlayer (String name, int depthLimit) {
+    public QuiesenceCheckersPlayer (String name, int depthLimit, Date date) {
         super(name);
         this.depthLimit = depthLimit;
     }
@@ -30,10 +34,9 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      * This method uses minimax algorithm to find the best move for MaxPlayer
      *
      * @param currentState current state of the game
-     * @param deadline maximum amount of time the operation can take
      * @return return the best move for MaxPlayer
      */
-    public Move getMove(GameState2 currentState, Date deadline) {
+    public Move getMove(GameState2 currentState, Date date) {
         AbstractSet<GameState2> successors = currentState.getSuccessors(true);
 
         GameState2 optimalState = null;
@@ -87,6 +90,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
      */
     public int maxValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
+            //explore the nodes further
             return quiesenceSearch(a, b, state, depth);
         }
 
@@ -123,6 +127,7 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
 
     public int minValue(GameState2 state, int a, int b, int depth) {
         if (isTerminalState(state, depth)) {
+            //explore the nodes further
             return quiesenceSearch(a, b, state, depth);
         }
 
@@ -168,8 +173,9 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
             if (p == null) continue;
             if (state == null) continue;
 
-            score = -quiesenceSearch(-alpha, -beta, p, depth);
+            exploredSuccessors++;
 
+            score = -quiesenceSearch(-alpha, -beta, p, depth);
             if (score >= alpha) {
                 alpha = score;
                 if (score >= beta) break;
@@ -179,6 +185,38 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
         return score;
     }
 
+    /**
+     * Considered this better approach on exploring only the  successors that result from applying a capturing move
+     * However, this code seemed to behave as if purposefully allowing the opponent to win
+     */
+//    private int quiesenceSearch(int alpha, int beta, GameState2 state, int depth) {
+//        int score = staticEvaluatorQ(state);
+//        if (score >= beta) {
+//            return score;
+//        }
+//
+//        AbstractSet<GameState2> successors = state.getSuccessorsQuiesence(true);
+//
+//        depth++;
+//        System.out.println("Quiesence: " + depth);
+//        for (GameState2 p : successors) {
+//            if (p == null) continue;
+//            if (state == null) continue;
+//
+//            exploredSuccessors++;
+//
+//            score = -quiesenceSearch(-alpha, -beta, p, depth);
+//
+//            if (score >= beta) {
+//                return beta;
+//            }
+//            if (score >= alpha) {
+//                alpha = score;
+//            }
+//
+//        }
+//        return score;
+//    }
 
     /**
      * Compute the value of the simple static evaluation function
@@ -193,6 +231,16 @@ public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
         return state.getScore(curOriginalPlayer);
     }
 
+    /**
+     * Used to experiment with the other Quiesence method approach
+     */
+//    public int staticEvaluatorQ(GameState2 state) {
+//        if (state == null) return 0;
+//        staticEvaluations++;
+////        if (state.getCurrentPlayer() == curOriginalPlayer) return -state.getScore(curOriginalPlayer);
+//        return state.getScore(state.getCurrentPlayer());
+////        return state.getScore(curOriginalPlayer);
+//    }
     /**
      * Get the number of nodes generated
      *

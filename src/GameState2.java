@@ -294,6 +294,30 @@ public class GameState2 implements Cloneable {
         return false;
     }
 
+//    /**
+//     * Returns <code>true</code> if and only if <code>move</code> is legal for
+//     * <code>player</code>.
+//     */
+//    public boolean isLegalMoveQuiesence(Move move, Player player) {
+//        Square from = move.from;
+//        Square to = move.to;
+//
+//        if ( board[from.row][from.col].getOwner() != player)
+//            return false;
+//
+//        if ( board[to.row][to.col].getOwner() != Player.EMPTY)
+//            return false;
+//
+//
+//        for (Direction d : Direction.values()) {
+//            if (d == Direction.UPRIGHT || d == Direction.UPLEFT || d == Direction.DOWNRIGHT || d == Direction.DOWNLEFT) {
+//                if (wouldJumpAndRemove(move, player, d) != null)
+//                    System.out.println(d);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     /**
      * Returns all valid Moves that may be taken from this state.
      */
@@ -451,7 +475,6 @@ public class GameState2 implements Cloneable {
             return GameStatus.TIE;
         }
 
-        if (pieces1 == kings1 && pieces2 == kings2) return GameStatus.TIE;
 
         if( moves1 + moves2 == 0) return GameStatus.TIE;
 
@@ -510,6 +533,31 @@ public class GameState2 implements Cloneable {
 
         return successors;
     }
+//
+//    public AbstractSet<GameState2> getSuccessorsQuiesence(boolean includePreviousStateReference) {
+//
+//        if (successors != null)
+//            return successors;
+//        AbstractSet<Move> movesSet = getValidMoves();
+//        Move moves[] = new Move[movesSet.size()];
+//        moves = movesSet.toArray(moves);
+//        successors = new HashSet<>();
+//
+//        for (int i = 0; i < moves.length; i++) {
+//
+//            if (moves[i] == null || !isLegalMoveQuiesence(moves[i], getCurrentPlayer())) continue;
+//            try {
+//
+//                successors.add(applyMove(moves[i]));
+//            }
+//            catch (InvalidMoveException ime) {
+//                /* This should not happen! */
+//                System.err.println(ime.toString());
+//            }
+//        }
+//
+//        return successors;
+//    }
 
     /**
      * Equivalent to {@link #applyMove(Move,boolean) applyMove(move, true)}.
