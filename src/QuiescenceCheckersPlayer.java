@@ -1,8 +1,11 @@
 import java.util.Date;
 import java.util.AbstractSet;
 
+
 /**
- * Class that creates a player using the Quiescence strategy
+ * QuiesenceScout implementation
+ * @author  Arun Sereshta, Aditi Joshi, Catalina Ionescu
+ * @class COMP 364, prof. Skalak, Fall 2018
  */
 public class QuiesenceCheckersPlayer extends CheckersPlayer implements Minimax{
 
